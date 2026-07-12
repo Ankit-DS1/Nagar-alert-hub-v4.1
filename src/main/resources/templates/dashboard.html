@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Analytics Dashboard - Nagar Alert Hub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .glass { background: rgba(30,41,59,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .metric-card { transition: transform 0.2s, box-shadow 0.2s; }
+        .metric-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(59,130,246,0.15); }
+        .live-dot { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+    </style>
+    <th:block th:replace="~{accessibility :: accessibility-styles}"></th:block>
+    <th:block th:replace="~{components :: siteStyles}"></th:block>
+</head>
+
+<body class="bg-slate-950 text-white min-h-screen flex flex-col">
+    <th:block th:replace="~{components :: siteBackground}"></th:block>
+    <th:block th:replace="~{components :: adminTopBar(deptName=${deptName})}"></th:block>
+
+    <div class="flex flex-1">
+        <th:block th:replace="~{components :: adminSidebar(activeTab=${activeTab}, deptName=${deptName})}"></th:block>
+
+        <main class="flex-1">
+            <div class="px-4 sm:px-6 py-6 max-w-7xl mx-auto">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-bold text-white">Analytics Dashboard</h2>
+                        <p class="text-slate-500 text-sm mt-1 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 live-dot"></span> Live — auto-refreshes every 5s
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 4 Key Metric Cards -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div class="metric-card glass rounded-2xl border border-slate-700 p-5 text-center">
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2">Total Alerts</p>
+                        <p id="mTotal" class="text-3xl font-extrabold text-blue-400" th:text="${totalAlerts}">0</p>
+                    </div>
+                    <div class="metric-card glass rounded-2xl border border-slate-700 p-5 text-center">
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2">Active Critical</p>
+                        <p id="mCritical" class="text-3xl font-extrabold text-red-400" th:text="${criticalCount}">0</p>
+                    </div>
+                    <div class="metric-card glass rounded-2xl border border-slate-700 p-5 text-center">
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2">Resolved (24h)</p>
+                        <p id="mResolved24" class="text-3xl font-extrabold text-emerald-400" th:text="${resolved24h}">0</p>
+                    </div>
+                    <div class="metric-card glass rounded-2xl border border-slate-700 p-5 text-center">
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2">Avg Resolution</p>
+                        <p id="mAvgRes" class="text-3xl font-extrabold text-amber-400"><span th:text="${avgResolutionHours}">0</span>h</p>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- 24h Trend Bar Chart -->
+                    <div class="glass rounded-2xl border border-slate-700 p-6 lg:col-span-2">
+                        <h3 class="text-sm font-bold text-white mb-4 flex items-center">
+                            <span class="w-1.5 h-5 bg-blue-500 rounded-full mr-2"></span> Alert Trends (Last 24h)
+                        </h3>
+                        <div class="h-64"><canvas id="trendChart"></canvas></div>
+                    </div>
+                    <!-- Donut: Department -->
+                    <div class="glass rounded-2xl border border-slate-700 p-6">
+                        <h3 class="text-sm font-bold text-white mb-4 flex items-center">
+                            <span class="w-1.5 h-5 bg-purple-500 rounded-full mr-2"></span> By Department
+                        </h3>
+                        <div class="h-64 flex items-center justify-center"><canvas id="deptChart"></canvas></div>
+                    </div>
+                    <!-- Bar: Severity -->
+                    <div class="glass rounded-2xl border border-slate-700 p-6 lg:col-span-3">
+                        <h3 class="text-sm font-bold text-white mb-4 flex items-center">
+                            <span class="w-1.5 h-5 bg-orange-500 rounded-full mr-2"></span> By Severity
+                        </h3>
+                        <div class="h-56"><canvas id="severityChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script th:inline="javascript">
+        const deptName = /*[[${deptName}]]*/ 'ALL';
+        const deptData = /*[[${deptDataJson}]]*/ '{}';
+        const severityData = /*[[${severityDataJson}]]*/ '{}';
+        const trendData = /*[[${trendDataJson}]]*/ '{}';
+
+        const deptColors = {
+            'Police': 'rgba(37,99,235,0.8)', 'Fire': 'rgba(220,38,38,0.8)',
+            'Medical': 'rgba(22,163,74,0.8)', 'Electrical': 'rgba(147,51,234,0.8)',
+            'Municipal': 'rgba(217,119,6,0.8)', 'Traffic': 'rgba(234,88,12,0.8)'
+        };
+        const sevColors = {
+            'CRITICAL': 'rgba(248,113,113,0.9)', 'HIGH': 'rgba(251,146,60,0.9)',
+            'MEDIUM': 'rgba(250,204,21,0.9)', 'LOW': 'rgba(96,165,250,0.9)'
+        };
+
+        function parseJson(s) { try { return JSON.parse(s); } catch(e) { return {}; } }
+
+        const chartOpts = {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: '#94a3b8', font: { family: 'Inter', size: 11 } } } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#94a3b8', stepSize: 1 } },
+                x: { grid: { display: false }, ticks: { color: '#94a3b8', maxRotation: 45, font: { size: 10 } } }
+            }
+        };
+
+        const trendObj = parseJson(trendData);
+        const trendChart = new Chart(document.getElementById('trendChart'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(trendObj),
+                datasets: [{ label: 'Alerts', data: Object.values(trendObj),
+                    backgroundColor: 'rgba(59,130,246,0.7)', borderRadius: 4 }]
+            },
+            options: { ...chartOpts, plugins: { legend: { display: false } } }
+        });
+
+        const deptObj = parseJson(deptData);
+        const deptChart = new Chart(document.getElementById('deptChart'), {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(deptObj).length ? Object.keys(deptObj) : ['No Data'],
+                datasets: [{ data: Object.values(deptObj).length ? Object.values(deptObj) : [1],
+                    backgroundColor: Object.keys(deptObj).map(k => deptColors[k] || '#64748b'),
+                    borderColor: '#0f172a', borderWidth: 2 }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, cutout: '65%',
+                plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 } } } } }
+        });
+
+        const sevObj = parseJson(severityData);
+        const severityChart = new Chart(document.getElementById('severityChart'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(sevObj).length ? Object.keys(sevObj) : ['No Data'],
+                datasets: [{ label: 'Alerts', data: Object.values(sevObj).length ? Object.values(sevObj) : [0],
+                    backgroundColor: Object.keys(sevObj).map(k => sevColors[k] || '#64748b'), borderRadius: 6 }]
+            },
+            options: { ...chartOpts, plugins: { legend: { display: false } } }
+        });
+
+        /* Real-time polling every 5 seconds */
+        async function refreshMetrics() {
+            try {
+                const res = await fetch(`/admin/api/metrics?dept=${deptName}`);
+                const d = await res.json();
+                document.getElementById('mTotal').textContent = d.totalAlerts;
+                document.getElementById('mCritical').textContent = d.criticalCount;
+                document.getElementById('mResolved24').textContent = d.resolved24h;
+                document.getElementById('mAvgRes').innerHTML = d.avgResolutionHours + 'h';
+
+                if (d.hourlyTrend) {
+                    trendChart.data.labels = Object.keys(d.hourlyTrend);
+                    trendChart.data.datasets[0].data = Object.values(d.hourlyTrend);
+                    trendChart.update('none');
+                }
+                if (d.byDept) {
+                    deptChart.data.labels = Object.keys(d.byDept);
+                    deptChart.data.datasets[0].data = Object.values(d.byDept);
+                    deptChart.data.datasets[0].backgroundColor = Object.keys(d.byDept).map(k => deptColors[k] || '#64748b');
+                    deptChart.update('none');
+                }
+                if (d.bySeverity) {
+                    severityChart.data.labels = Object.keys(d.bySeverity);
+                    severityChart.data.datasets[0].data = Object.values(d.bySeverity);
+                    severityChart.data.datasets[0].backgroundColor = Object.keys(d.bySeverity).map(k => sevColors[k] || '#64748b');
+                    severityChart.update('none');
+                }
+            } catch (e) { console.warn('Metrics poll failed', e); }
+        }
+        setInterval(refreshMetrics, 5000);
+    </script>
+    <th:block th:replace="~{accessibility :: accessibility-widget}"></th:block>
+</body>
+</html>

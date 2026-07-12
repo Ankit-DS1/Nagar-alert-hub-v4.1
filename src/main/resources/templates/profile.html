@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>My Profile - Nagar Alert Hub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .profile-card { transition: box-shadow 0.3s ease, border-color 0.3s ease; }
+        .profile-card:hover { box-shadow: 0 20px 60px rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); }
+    </style>
+    <th:block th:replace="~{accessibility :: accessibility-styles}"></th:block>
+    <th:block th:replace="~{components :: siteStyles}"></th:block>
+</head>
+
+<body class="bg-slate-950 text-white min-h-screen flex flex-col relative overflow-x-hidden">
+
+    <th:block th:replace="~{components :: siteBackground}"></th:block>
+    <th:block th:replace="~{components :: siteNav('profile')}"></th:block>
+
+    <main class="flex-grow container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-2xl">
+
+        <!-- Page Header -->
+        <div class="reveal text-center mb-8">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-400 text-xs font-bold uppercase tracking-wider mb-4">
+                <span>👤</span>
+                <span data-i18n="profile_badge">Citizen Profile</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white" data-i18n="profile_title">My Profile</h2>
+            <p class="text-slate-400 text-sm mt-2" data-i18n="profile_desc">Manage your account details and alert tracking info.</p>
+        </div>
+
+        <div class="reveal profile-card glass border border-slate-700/50 rounded-2xl shadow-2xl p-6 sm:p-8 md:p-10 relative overflow-hidden">
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-16 -left-16 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div th:if="${param.success}" class="mb-6 p-4 bg-green-900/30 border border-green-500/30 rounded-xl text-green-400 text-center text-sm font-bold">
+                <span data-i18n="profile_success">Profile updated successfully!</span>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6 mb-8 text-center sm:text-left relative z-10">
+                <div class="relative shrink-0">
+                    <img th:if="${appUser.profileImage != null}" th:src="${appUser.profileImage}" alt="Profile Picture"
+                        class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-slate-700 shadow-xl object-cover bg-slate-900 ring-2 ring-blue-500/20">
+                    <div th:unless="${appUser.profileImage != null}"
+                        class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-slate-700 shadow-xl bg-slate-900 flex items-center justify-center text-4xl text-slate-600 ring-2 ring-blue-500/20">
+                        👤
+                    </div>
+                    <div class="absolute bottom-1 right-1 bg-blue-600 p-1.5 rounded-full shadow-lg border-2 border-slate-800" title="Verified via Google">
+                        <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                </div>
+                <div class="pt-1">
+                    <h1 class="text-xl sm:text-2xl font-extrabold text-white mb-1" th:text="${appUser.name}">Citizen Name</h1>
+                    <p class="text-slate-400 font-medium text-sm" th:text="${appUser.email}">email@example.com</p>
+                    <div class="mt-3 inline-flex items-center gap-1.5 bg-blue-900/30 text-blue-400 px-3 py-1 rounded-full text-[11px] font-bold border border-blue-500/30 uppercase tracking-wide">
+                        <span>⭐</span> <span data-i18n="profile_account">Citizen Account</span>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-slate-800 mb-8 relative z-10">
+
+            <form th:action="@{/profile}" method="post" class="space-y-5 max-w-lg relative z-10">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                        <span data-i18n="profile_phone">Phone Number</span>
+                        <span class="text-slate-600 normal-case tracking-normal font-normal" data-i18n="profile_phone_hint">(For tracking alerts)</span>
+                    </label>
+                    <input type="tel" name="mobileNumber" th:value="${appUser.mobileNumber}"
+                        class="w-full bg-slate-900/50 border border-slate-700 rounded-xl p-3.5 text-sm text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-900/50 focus:outline-none placeholder-slate-600 transition"
+                        placeholder="e.g. 9876543210">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                        <span data-i18n="profile_dob">Date of Birth</span>
+                        <span class="text-slate-600 normal-case tracking-normal font-normal" data-i18n="profile_dob_hint">(Optional)</span>
+                    </label>
+                    <input type="date" name="dob" th:value="${appUser.dob}"
+                        class="w-full bg-slate-900/50 border border-slate-700 rounded-xl p-3.5 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-900/50 focus:outline-none text-sm transition">
+                </div>
+                <button type="submit"
+                    class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-900/20 transition active:scale-[0.98] text-sm flex items-center justify-center gap-2">
+                    <span data-i18n="profile_save">Save Changes</span>
+                    <span>→</span>
+                </button>
+            </form>
+
+            <div class="mt-8 pt-6 border-t border-slate-800 relative z-10">
+                <form action="/logout" method="post">
+                    <button type="submit" class="w-full sm:w-auto bg-slate-900/80 hover:bg-red-900/30 text-red-400 border border-slate-700 hover:border-red-500/30 font-bold py-3 px-8 rounded-xl transition-all flex items-center justify-center gap-2 mx-auto sm:mx-0 active:scale-[0.98]">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                        <span data-i18n="profile_logout">Logout</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="reveal grid grid-cols-2 gap-3 mt-6">
+            <a href="/my-alerts" class="glass p-4 rounded-xl border border-slate-700/50 hover:border-blue-500/40 transition text-center group">
+                <span class="text-2xl block mb-1">🔍</span>
+                <span class="text-sm font-bold text-slate-300 group-hover:text-blue-400 transition" data-i18n="nav_track_short">Track Alerts</span>
+            </a>
+            <a href="/#report-section" class="glass p-4 rounded-xl border border-slate-700/50 hover:border-blue-500/40 transition text-center group">
+                <span class="text-2xl block mb-1">✍️</span>
+                <span class="text-sm font-bold text-slate-300 group-hover:text-blue-400 transition" data-i18n="nav_report">Report</span>
+            </a>
+        </div>
+    </main>
+
+    <th:block th:replace="~{components :: siteFooter}"></th:block>
+
+    <script>
+        const translations = {
+            hi: {
+                nav_tagline: 'शहर सुरक्षा मंच', nav_home: 'होम', nav_report: 'शिकायत', nav_live: 'लाइव मैप',
+                nav_track: 'मेरी शिकायत ट्रैक करें', nav_track_short: 'ट्रैक', nav_profile: 'मेरी प्रोफ़ाइल',
+                profile_badge: 'नागरिक प्रोफ़ाइल', profile_title: 'मेरी प्रोफ़ाइल',
+                profile_desc: 'अपने खाते और अलर्ट ट्रैकिंग की जानकारी प्रबंधित करें।',
+                profile_success: 'प्रोफ़ाइल सफलतापूर्वक अपडेट!', profile_account: 'नागरिक खाता',
+                profile_phone: 'फ़ोन नंबर', profile_phone_hint: '(अलर्ट ट्रैकिंग के लिए)',
+                profile_dob: 'जन्म तिथि', profile_dob_hint: '(वैकल्पिक)',
+                profile_save: 'परिवर्तन सहेजें', profile_logout: 'लॉग आउट',
+                footer: '© 2026 नगर अलर्ट हब। शहर की सुरक्षा।'
+            },
+            en: {
+                nav_tagline: 'City Safety Platform', nav_home: 'Home', nav_report: 'Report', nav_live: 'Live Map',
+                nav_track: 'Track My Alert', nav_track_short: 'Track', nav_profile: 'My Profile',
+                profile_badge: 'Citizen Profile', profile_title: 'My Profile',
+                profile_desc: 'Manage your account details and alert tracking info.',
+                profile_success: 'Profile updated successfully!', profile_account: 'Citizen Account',
+                profile_phone: 'Phone Number', profile_phone_hint: '(For tracking alerts)',
+                profile_dob: 'Date of Birth', profile_dob_hint: '(Optional)',
+                profile_save: 'Save Changes', profile_logout: 'Logout',
+                footer: '© 2026 Nagar Alert Hub. Protecting the City.'
+            }
+        };
+        let currentLang = localStorage.getItem('nagarLang') || 'hi';
+        function applyTranslations(lang) {
+            const t = translations[lang];
+            if (!t) return;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) el.textContent = t[key];
+            });
+            const labelHi = document.getElementById('labelHi');
+            const labelEn = document.getElementById('labelEn');
+            const knob = document.getElementById('langToggleKnob');
+            const stick = document.getElementById('langToggleStick');
+            if (labelHi && labelEn && knob && stick) {
+                if (lang === 'en') {
+                    labelEn.className = "text-[10px] font-bold tracking-[0.15em] cursor-pointer text-blue-600 transition";
+                    labelHi.className = "text-[11px] font-bold cursor-pointer text-gray-400 hover:text-gray-600 transition";
+                    knob.style.transform = "translateX(0)"; stick.style.transform = "rotate(-25deg)";
+                } else {
+                    labelHi.className = "text-[11px] font-bold cursor-pointer text-blue-600 transition";
+                    labelEn.className = "text-[10px] font-bold tracking-[0.15em] cursor-pointer text-gray-400 hover:text-gray-600 transition";
+                    knob.style.transform = "translateX(24px)"; stick.style.transform = "rotate(-155deg)";
+                }
+            }
+        }
+        function setLanguage(lang) { currentLang = lang; localStorage.setItem('nagarLang', currentLang); applyTranslations(currentLang); }
+        function toggleLanguage() { currentLang = currentLang === 'hi' ? 'en' : 'hi'; localStorage.setItem('nagarLang', currentLang); applyTranslations(currentLang); }
+        document.addEventListener('DOMContentLoaded', () => applyTranslations(currentLang));
+    </script>
+    <th:block th:replace="~{components :: siteNavScript}"></th:block>
+    <th:block th:replace="~{accessibility :: accessibility-widget}"></th:block>
+</body>
+
+</html>

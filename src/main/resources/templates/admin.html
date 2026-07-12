@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Admin Portal - Nagar Alert Hub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .glass { background: rgba(30,41,59,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+    </style>
+    <th:block th:replace="~{accessibility :: accessibility-styles}"></th:block>
+    <th:block th:replace="~{components :: siteStyles}"></th:block>
+</head>
+
+<body class="bg-slate-950 text-white min-h-screen flex flex-col">
+    <th:block th:replace="~{components :: siteBackground}"></th:block>
+    <th:block th:replace="~{components :: adminTopBar(deptName=${deptName})}"></th:block>
+
+    <div class="flex flex-1">
+        <th:block th:replace="~{components :: adminSidebar(activeTab=${activeTab}, deptName=${deptName})}"></th:block>
+
+        <main class="flex-1 overflow-x-hidden">
+            <div class="px-4 sm:px-6 py-6 max-w-7xl mx-auto">
+                <!-- Mobile nav tabs -->
+                <div class="lg:hidden flex gap-2 mb-6 overflow-x-auto pb-2">
+                    <a th:href="@{/admin/dashboard(dept=${deptName})}" class="px-3 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 whitespace-nowrap">📊 Dashboard</a>
+                    <a th:href="@{/admin(dept=${deptName})}" class="px-3 py-2 text-xs font-bold rounded-lg bg-blue-600/20 text-blue-400 border border-blue-500/30 whitespace-nowrap">📋 Queue</a>
+                    <a th:href="@{/admin/users(dept=${deptName})}" class="px-3 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 whitespace-nowrap">👥 Users</a>
+                </div>
+
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-[10px] font-bold uppercase tracking-wider mb-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse"></span> Live Queue
+                        </div>
+                        <h2 class="text-xl md:text-2xl font-bold text-white">Incoming Alerts</h2>
+                    </div>
+                    <span class="text-xs font-bold text-slate-300 glass border border-slate-700 px-4 py-2 rounded-full" th:text="${#lists.size(alerts)} + ' active'">0</span>
+                </div>
+
+                <!-- Empty State -->
+                <div th:if="${alerts.empty}" class="glass p-16 rounded-2xl text-center border-dashed border-2 border-slate-700">
+                    <div class="text-5xl mb-4 opacity-40">🌟</div>
+                    <h3 class="text-lg font-semibold text-white">All quiet in the city</h3>
+                    <p class="text-slate-400 mt-2 text-sm">No public disruptions reported for <span th:text="${deptName}">DEPT</span>!</p>
+                </div>
+
+                <!-- Operational Queue Table -->
+                <div th:unless="${alerts.empty}" class="glass rounded-2xl border border-slate-700 overflow-hidden">
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left text-sm text-slate-300">
+                            <thead class="bg-slate-800/80 text-xs uppercase text-slate-400 border-b border-slate-700 font-semibold tracking-wider">
+                                <tr>
+                                    <th class="px-5 py-4">Incident</th>
+                                    <th class="px-5 py-4">Location</th>
+                                    <th class="px-5 py-4">Department</th>
+                                    <th class="px-5 py-4">Severity</th>
+                                    <th class="px-5 py-4">Status</th>
+                                    <th class="px-5 py-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-700/50">
+                                <tr th:each="alert : ${alerts}" class="hover:bg-slate-800/40 transition" th:attr="data-alert-id=${alert.alertId}">
+                                    <!-- Incident: thumbnail + description -->
+                                    <td class="px-5 py-4 min-w-[220px]">
+                                        <div class="flex items-start gap-3">
+                                            <img th:if="${alert.imageUrl != null}" th:src="${alert.imageUrl}"
+                                                 th:attr="onclick=|openImageModal('${alert.imageUrl}')|"
+                                                 class="w-12 h-12 object-cover rounded-lg border border-slate-600 cursor-pointer hover:border-blue-500 transition shrink-0" alt="Evidence">
+                                            <div class="min-w-0">
+                                                <p class="text-white text-xs leading-relaxed line-clamp-2" th:text="${alert.description}">Description</p>
+                                                <span th:if="${alert.potentialDuplicate}" class="inline-flex items-center mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-orange-900/30 text-orange-400 border border-orange-500/30">
+                                                    ⚠️ Potential Duplicate
+                                                </span>
+                                                <p th:if="${alert.aiReason != null}" class="text-[10px] text-blue-300 mt-1">💡 <span th:text="${alert.aiReason}">AI</span></p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-5 py-4 text-xs text-slate-300 max-w-[180px]">
+                                        <span class="line-clamp-2" th:text="${alert.location}">Location</span>
+                                    </td>
+                                    <td class="px-5 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase border bg-slate-800 text-slate-300 border-slate-600"
+                                              th:text="${alert.department}">DEPT</span>
+                                    </td>
+                                    <td class="px-5 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase border"
+                                              th:classappend="${alert.severity?.name() == 'CRITICAL'} ? 'bg-red-900/30 text-red-400 border-red-500/30' :
+                                                              (${alert.severity?.name() == 'HIGH'} ? 'bg-orange-900/30 text-orange-400 border-orange-500/30' :
+                                                              (${alert.severity?.name() == 'MEDIUM'} ? 'bg-amber-100/10 text-amber-400 border-amber-500/30' : 'bg-blue-900/30 text-blue-400 border-blue-500/30'))"
+                                              th:text="${alert.severity}">SEV</span>
+                                    </td>
+                                    <td class="px-5 py-4">
+                                        <select class="status-select text-xs font-bold rounded-lg px-2 py-1.5 border bg-slate-900 cursor-pointer transition"
+                                                th:attr="data-id=${alert.alertId}, data-dept=${deptName}"
+                                                th:classappend="${alert.status?.name() == 'PENDING'} ? 'bg-amber-100/10 text-amber-400 border-amber-500/30' :
+                                                               (${alert.status?.name() == 'IN_PROGRESS'} ? 'bg-blue-100/10 text-blue-400 border-blue-500/30' :
+                                                               'bg-emerald-100/10 text-emerald-400 border-emerald-500/30')">
+                                            <option value="PENDING" th:selected="${alert.status?.name() == 'PENDING'}">⏳ Pending</option>
+                                            <option value="IN_PROGRESS" th:selected="${alert.status?.name() == 'IN_PROGRESS'}">👷 In Progress</option>
+                                            <option value="RESOLVED" th:selected="${alert.status?.name() == 'RESOLVED'}">✅ Resolved</option>
+                                        </select>
+                                    </td>
+                                    <td class="px-5 py-4 text-right">
+                                        <button th:attr="onclick=|deleteAlert('${alert.alertId}')|"
+                                                class="text-xs font-bold text-red-400 hover:bg-red-900/30 px-3 py-1.5 rounded-lg border border-transparent hover:border-red-500/30 transition">
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <th:block th:replace="~{components :: imageModal}"></th:block>
+    <th:block th:replace="~{accessibility :: accessibility-widget}"></th:block>
+
+    <script th:inline="javascript">
+        const deptName = /*[[${deptName}]]*/ 'ALL';
+
+        document.querySelectorAll('.status-select').forEach(sel => {
+            sel.addEventListener('change', async function () {
+                const id = this.dataset.id;
+                const status = this.value;
+                try {
+                    const res = await fetch(`/admin/api/status/${id}?status=${status}`, { method: 'POST' });
+                    const data = await res.json();
+                    if (data.success) {
+                        this.className = 'status-select text-xs font-bold rounded-lg px-2 py-1.5 border bg-slate-900 cursor-pointer transition ' +
+                            (status === 'PENDING' ? 'bg-amber-100/10 text-amber-400 border-amber-500/30' :
+                             status === 'IN_PROGRESS' ? 'bg-blue-100/10 text-blue-400 border-blue-500/30' :
+                             'bg-emerald-100/10 text-emerald-400 border-emerald-500/30');
+                    }
+                } catch (e) { console.error('Status update failed', e); }
+            });
+        });
+
+        async function deleteAlert(id) {
+            if (!confirm('Delete this alert permanently?')) return;
+            await fetch(`/admin/api/delete/${id}`, { method: 'POST' });
+            document.querySelector(`tr[data-alert-id="${id}"]`)?.remove();
+        }
+    </script>
+</body>
+</html>

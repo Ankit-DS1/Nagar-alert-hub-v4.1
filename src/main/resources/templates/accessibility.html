@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- 1. Accessibility Styles Fragment (Include in <head>) -->
+<head th:fragment="accessibility-styles">
+    <script th:src="@{/js/accessibility.js}" defer></script>
+    <style>
+        /* High Contrast Mode */
+        body.a11y-high-contrast {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+            background-image: none !important;
+        }
+        body.a11y-high-contrast * {
+            background-color: #000000 !important;
+            color: #ffff00 !important;
+            border-color: #ffffff !important;
+        }
+
+        /* Light Mode */
+        body.a11y-light-mode {
+            background-color: #f8fafc !important;
+            color: #0f172a !important;
+        }
+        body.a11y-light-mode .bg-slate-950,
+        body.a11y-light-mode .bg-slate-900 {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+        }
+        body.a11y-light-mode .text-slate-200,
+        body.a11y-light-mode .text-slate-300,
+        body.a11y-light-mode .text-slate-400 {
+            color: #334155 !important;
+        }
+        body.a11y-light-mode .border-slate-700,
+        body.a11y-light-mode .border-slate-800 {
+            border-color: #cbd5e1 !important;
+        }
+        body.a11y-light-mode .glass {
+            background: rgba(255, 255, 255, 0.85) !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            color: #0f172a !important;
+        }
+        
+        /* Comprehensive Element Overrides */
+        body.a11y-light-mode h1.text-white,
+        body.a11y-light-mode h2.text-white,
+        body.a11y-light-mode h3.text-white {
+            color: #0f172a !important;
+        }
+        body.a11y-light-mode .bg-slate-900\/50,
+        body.a11y-light-mode .bg-slate-800 {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+        }
+        body.a11y-light-mode input.text-white,
+        body.a11y-light-mode textarea.text-white,
+        body.a11y-light-mode input[class*="bg-slate-"],
+        body.a11y-light-mode textarea[class*="bg-slate-"] {
+            background-color: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+        body.a11y-light-mode input::placeholder,
+        body.a11y-light-mode textarea::placeholder {
+            color: #64748b !important;
+        }
+        body.a11y-light-mode .text-slate-500,
+        body.a11y-light-mode .text-slate-600 {
+            color: #475569 !important;
+        }
+        
+        /* Arcade Toggle Light Mode Masterpiece */
+        body.a11y-light-mode .arcade-toggle-track {
+            background-color: #e2e8f0 !important;
+            border-color: #cbd5e1 !important;
+        }
+        body.a11y-light-mode .arcade-toggle-stick {
+            background-color: #94a3b8 !important;
+        }
+        body.a11y-light-mode .arcade-toggle-container {
+            background-color: #ffffff !important; /* ultra light background for the pill container */
+            border-color: #e2e8f0 !important; /* very subtle border */
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05) !important;
+        }
+        
+        /* Accessibility Top Bar Light Mode */
+        body.a11y-light-mode .a11y-top-bar {
+            background-color: #f1f5f9 !important; /* very light gray */
+            color: #334155 !important;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        body.a11y-light-mode .a11y-top-bar .text-white,
+        body.a11y-light-mode .a11y-top-bar button.text-white {
+            color: #334155 !important;
+        }
+        body.a11y-light-mode .a11y-top-bar .text-white\/60 {
+            color: #94a3b8 !important;
+        }
+        body.a11y-light-mode .a11y-top-bar .text-gray-300 {
+            color: #64748b !important;
+        }
+
+        /* Dyslexia Friendly */
+        body.a11y-dyslexia, body.a11y-dyslexia * {
+            font-family: "Comic Sans MS", "Comic Sans", cursive !important;
+        }
+
+        /* Highlight Links */
+        body.a11y-highlight-links a {
+            background-color: #ffff00 !important;
+            color: #000000 !important;
+            text-decoration: underline !important;
+            font-weight: bold !important;
+        }
+
+        /* Hide Images */
+        body.a11y-hide-images img, body.a11y-hide-images svg, body.a11y-hide-images video {
+            display: none !important;
+        }
+        body.a11y-hide-images * {
+            background-image: none !important;
+        }
+
+        /* Big Cursor */
+        body.a11y-big-cursor, body.a11y-big-cursor * {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="black" stroke="white" stroke-width="2" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87c.45 0 .67-.54.35-.85L5.5 3.21z"/></svg>') 1 1, auto !important;
+        }
+
+        /* Text Spacing */
+        body.a11y-text-spacing * {
+            letter-spacing: 0.12em !important;
+            word-spacing: 0.16em !important;
+        }
+
+        /* Line Height */
+        body.a11y-line-height * {
+            line-height: 2 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 2. Accessibility Top Bar Fragment (Include at the top of <body>) -->
+    <div th:fragment="accessibility-top-bar" class="a11y-top-bar w-full bg-[#04112c] text-white text-[11px] sm:text-xs py-1.5 sm:py-2 px-3 sm:px-6 flex flex-col sm:flex-row justify-between items-center z-50 relative font-sans tracking-wide">
+        <button onclick="document.getElementById('external-link-modal').style.display='flex'" class="flex items-center font-medium mb-1 sm:mb-0 hover:opacity-80 transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-yellow-400">
+            <img src="https://flagcdn.com/w20/in.png" alt="India Flag" class="w-4 h-3 mr-2 inline-block rounded-sm">
+            <span>Government of India</span>
+            <svg class="w-3.5 h-3.5 ml-1 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+        </button>
+        
+        <!-- External Link Modal -->
+        <div id="external-link-modal" class="fixed inset-0 bg-black/40 hidden z-[99999] items-center justify-center font-sans text-left" style="display: none;">
+            <div class="bg-white w-[90%] max-w-[420px] p-6 shadow-2xl">
+                <p class="text-black text-[15px] mb-4 font-normal">https://www.india.gov.in/</p>
+                <p class="text-black text-[14px] font-semibold leading-relaxed mb-8">
+                    You are being redirected to an external website. Please note that Nagar Alert Hub is not responsible for external websites content & privacy policies.
+                </p>
+                <div class="flex justify-end items-center space-x-6 mt-2">
+                    <button onclick="document.getElementById('external-link-modal').style.display='none'" class="text-[#007bff] hover:text-blue-700 uppercase font-normal text-[15px] tracking-wide">CANCEL</button>
+                    <a href="https://www.india.gov.in/" target="_blank" onclick="document.getElementById('external-link-modal').style.display='none'" class="bg-[#007bff] hover:bg-blue-600 text-white uppercase font-normal text-[15px] tracking-wide px-5 py-2 rounded shadow-sm inline-block">OK</a>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3 sm:space-x-5 font-medium">
+            <a href="#main-content" class="hover:underline focus:outline-none focus:ring-2 focus:ring-yellow-400 whitespace-nowrap">Skip to main content</a>
+            
+            <span class="text-white/60 font-light">|</span>
+
+            <button onclick="a11yToggle('lightMode'); setTimeout(() => { const isL = document.body.classList.contains('a11y-light-mode'); document.getElementById('i-light').classList.toggle('hidden', !isL); document.getElementById('i-dark').classList.toggle('hidden', isL); }, 10);" class="focus:outline-none focus:ring-2 focus:ring-yellow-400 flex items-center justify-center hover:opacity-80 transition-opacity" title="Toggle Light/Dark Mode">
+                <svg id="i-light" class="w-3.5 h-3.5 sm:w-4 sm:h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                <svg id="i-dark" class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+            </button>
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    setTimeout(() => {
+                        const isL = document.body.classList.contains('a11y-light-mode');
+                        document.getElementById('i-light').classList.toggle('hidden', !isL);
+                        document.getElementById('i-dark').classList.toggle('hidden', isL);
+                    }, 100);
+                });
+            </script>
+            
+            <span class="text-white/60 font-light">|</span>
+            
+            <div class="flex items-center space-x-3">
+                <button onclick="a11yChangeFontSize(2)" class="focus:outline-none focus:ring-2 focus:ring-yellow-400" title="Increase Font Size">A+</button>
+                <button onclick="a11yChangeFontSize(0)" class="focus:outline-none focus:ring-2 focus:ring-yellow-400" title="Normal Font Size">A</button>
+                <button onclick="a11yChangeFontSize(-2)" class="focus:outline-none focus:ring-2 focus:ring-yellow-400" title="Decrease Font Size">A-</button>
+            </div>
+
+            <span class="text-white/60 font-light">|</span>
+
+            <div class="flex items-center space-x-1.5 relative" id="a11y-lang-container">
+                <!-- Translate Icon -->
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <text x="1" y="15" font-family="sans-serif" font-size="16" font-weight="bold">A</text>
+                    <text x="9" y="22" font-family="sans-serif" font-size="16" font-weight="bold">अ</text>
+                </svg>
+                
+                <button type="button" onclick="document.getElementById('a11y-lang-menu').classList.toggle('hidden')" class="bg-transparent border-none text-white text-[11px] sm:text-xs focus:outline-none cursor-pointer p-0 pr-4 font-medium relative flex items-center h-full focus:ring-2 focus:ring-yellow-400">
+                    <span id="a11y-lang-text">English</span>
+                    <!-- Custom dropdown arrow -->
+                    <svg class="w-3.5 h-3.5 text-white absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div id="a11y-lang-menu" class="hidden absolute top-[calc(100%+8px)] right-0 w-[140px] bg-white border border-gray-200 shadow-xl z-50 text-gray-800 text-[13px] font-sans tracking-normal overflow-hidden">
+                    <ul class="py-1">
+                        <li>
+                            <button type="button" onclick="a11ySelectLang('en')" class="w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center justify-between transition-colors focus:bg-gray-50 focus:outline-none">
+                                <span class="font-normal text-gray-700">English</span>
+                                <span class="text-blue-600 lang-check" id="lang-check-en">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                                </span>
+                            </button>
+                        </li>
+                        <li class="border-t border-gray-200 mx-2"></li>
+                        <li>
+                            <button type="button" onclick="a11ySelectLang('hi')" class="w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center justify-between transition-colors focus:bg-gray-50 focus:outline-none">
+                                <span class="font-normal text-gray-700">हिंदी (Hindi)</span>
+                                <span class="text-blue-600 lang-check hidden" id="lang-check-hi">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                                </span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <script>
+                function a11ySelectLang(lang) {
+                    if (typeof setLanguage === 'function') {
+                        setLanguage(lang);
+                    }
+                    document.getElementById('a11y-lang-text').textContent = lang === 'hi' ? 'हिंदी' : 'English';
+                    document.getElementById('lang-check-en').classList.toggle('hidden', lang !== 'en');
+                    document.getElementById('lang-check-hi').classList.toggle('hidden', lang !== 'hi');
+                    document.getElementById('a11y-lang-menu').classList.add('hidden');
+                }
+                document.addEventListener('click', function(e) {
+                    const container = document.getElementById('a11y-lang-container');
+                    const menu = document.getElementById('a11y-lang-menu');
+                    if (container && menu && !container.contains(e.target)) {
+                        menu.classList.add('hidden');
+                    }
+                });
+                document.addEventListener('DOMContentLoaded', () => {
+                    const lang = localStorage.getItem('nagarLang') || 'en';
+                    document.getElementById('a11y-lang-text').textContent = lang === 'hi' ? 'हिंदी' : 'English';
+                    document.getElementById('lang-check-en').classList.toggle('hidden', lang !== 'en');
+                    document.getElementById('lang-check-hi').classList.toggle('hidden', lang !== 'hi');
+                });
+            </script>
+        </div>
+    </div>
+
+    <!-- 3. Accessibility Widget Fragment (Include at the bottom of <body>) -->
+    <div th:fragment="accessibility-widget">
+        <!-- Floating Button -->
+        <button onclick="a11yToggleWidget()" 
+            class="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 w-12 h-12 sm:w-14 sm:h-14 bg-[#5C45FD] text-white rounded-full shadow-xl flex items-center justify-center hover:scale-105 transition-transform z-50 focus:outline-none focus:ring-4 focus:ring-blue-300"
+            aria-label="Open Accessibility Menu" title="Accessibility Options">
+            <svg class="w-7 h-7 sm:w-8 sm:h-8" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/>
+            </svg>
+        </button>
+
+        <!-- Widget Panel -->
+        <div id="a11y-widget-panel" class="hidden fixed bottom-24 right-6 sm:bottom-28 sm:right-8 w-[280px] sm:w-[340px] max-h-[80vh] bg-white rounded-xl shadow-2xl border border-gray-200 z-50 overflow-hidden flex flex-col font-sans">
+            
+            <!-- Header -->
+            <div class="bg-[#5C45FD] text-white p-4 flex justify-between items-center">
+                <h3 class="font-bold text-base sm:text-lg">Accessibility Options</h3>
+                <button onclick="a11yToggleWidget()" class="text-white hover:text-gray-200 focus:outline-none">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <!-- Grid Options -->
+            <div class="p-4 grid grid-cols-2 gap-3 max-h-[60vh] overflow-y-auto bg-gray-50">
+                
+                <button id="btn-a11y-tts" onclick="a11yToggle('tts')" class="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition cursor-pointer">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 text-gray-700 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M17.657 6.343a8 8 0 010 11.314M12 18h-2a2 2 0 01-2-2v-4a2 2 0 012-2h2m0 0l4-4v12l-4-4z"></path></svg>
+                    <span class="text-[10px] sm:text-xs font-bold text-gray-800">Text To Speech</span>
+                </button>
+
+                <button id="btn-a11y-text-spacing" onclick="a11yToggle('textSpacing')" class="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition cursor-pointer">
+                    <div class="text-xl sm:text-2xl font-bold text-gray-700 mb-1 sm:mb-2 tracking-[0.2em]">A&harr;</div>
+                    <span class="text-[10px] sm:text-xs font-bold text-gray-800">Text Spacing</span>
+                </button>
+
+                <button id="btn-a11y-line-height" onclick="a11yToggle('lineHeight')" class="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition cursor-pointer">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 text-gray-700 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    <span class="text-[10px] sm:text-xs font-bold text-gray-800">Line Height</span>
+                </button>
+
+                <button id="btn-a11y-highlight-links" onclick="a11yToggle('highlightLinks')" class="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition cursor-pointer">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 text-gray-700 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                    <span class="text-[10px] sm:text-xs font-bold text-gray-800">Highlight Links</span>
+                </button>
+
+                <button id="btn-a11y-dyslexia" onclick="a11yToggle('dyslexia')" class="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition cursor-pointer">
+                    <div class="text-xl sm:text-2xl font-bold text-gray-700 mb-1 sm:mb-2" style="font-family: 'Comic Sans MS', cursive;">Df</div>
+                    <span class="text-[10px] sm:text-xs font-bold text-gray-800">Dyslexia Friendly</span>
+                </button>
+
+                <button id="btn-a11y-hide-images" onclick="a11yToggle('hideImages')" class="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition cursor-pointer">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 text-gray-700 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18M4 4h16v16H4V4z"></path></svg>
+                    <span class="text-[10px] sm:text-xs font-bold text-gray-800">Hide Images</span>
+                </button>
+
+                <button id="btn-a11y-big-cursor" onclick="a11yToggle('bigCursor')" class="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition cursor-pointer">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 text-gray-700 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+                    <span class="text-[10px] sm:text-xs font-bold text-gray-800">Cursor</span>
+                </button>
+
+                <button id="btn-a11y-high-contrast" onclick="a11yToggle('highContrast')" class="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition cursor-pointer">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 text-gray-700 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    <span class="text-[10px] sm:text-xs font-bold text-gray-800">Light-Dark / Contrast</span>
+                </button>
+
+            </div>
+
+            <!-- Footer Reset -->
+            <div class="p-3 bg-white border-t border-gray-200 text-center">
+                <button onclick="a11yReset()" class="w-full py-2 bg-[#E9E1FF] text-blue-900 font-bold rounded-lg text-sm flex justify-center items-center hover:bg-purple-200 transition">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    Reset All Settings
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 4. Arcade Language Toggle Fragment -->
+    <div th:fragment="arcade-language-toggle">
+        <div class="arcade-toggle-container flex items-center space-x-3 bg-black/30 px-3 py-1.5 rounded-full border border-slate-700 shadow-inner">
+            <span id="labelEn"
+                class="text-[10px] font-bold tracking-[0.15em] cursor-pointer transition-colors duration-300 text-blue-500"
+                onclick="setLanguage('en')">EN</span>
+
+            <button id="langToggleBtn" onclick="toggleLanguage()"
+                class="arcade-toggle-track relative flex items-center w-12 h-5 rounded-full border-2 border-slate-600 focus:outline-none bg-black/50 mx-1">
+                <div id="langToggleKnob"
+                    class="absolute flex items-center justify-center transition-transform duration-300 ease-in-out"
+                    style="width: 18px; height: 18px; left: -2px;">
+                    <div id="langToggleStick"
+                        class="arcade-toggle-stick absolute w-4 h-1 bg-slate-400 transition-transform duration-300 origin-left"
+                        style="transform: rotate(-25deg); left: 50%;"></div>
+                    <div
+                        class="w-full h-full rounded-full bg-pink-500 z-10 relative shadow-[0_0_10px_rgba(236,72,153,0.8)] flex items-start justify-start p-1 cursor-pointer hover:bg-pink-400 transition-colors">
+                        <div class="w-1.5 h-1.5 bg-white/90 rounded-full"></div>
+                    </div>
+                </div>
+            </button>
+
+            <span id="labelHi"
+                class="text-sm font-bold tracking-wide cursor-pointer transition-colors duration-300 text-slate-400 hover:text-slate-200"
+                onclick="setLanguage('hi')">हिं</span>
+        </div>
+    </div>
+</body>
+</html>

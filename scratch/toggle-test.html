@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toggle Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 min-h-screen flex items-center justify-center">
+
+    <div class="flex items-center space-x-4 bg-black/50 p-6 rounded-lg">
+        <span id="labelHi" class="text-xs font-bold tracking-widest cursor-pointer transition-colors duration-300 text-pink-500" onclick="setLanguage('hi')">हिंदी</span>
+
+        <button id="langToggleBtn" onclick="toggleLanguage()" class="relative flex items-center w-12 h-4 rounded-full border-2 border-slate-600 focus:outline-none bg-transparent">
+            <!-- Knob Container -->
+            <div id="langToggleKnob" class="absolute flex items-center justify-center transition-all duration-300 ease-in-out" style="width: 20px; height: 20px; left: -4px;">
+                
+                <!-- Stick -->
+                <div id="langToggleStick" class="absolute w-5 h-1 bg-slate-400 origin-left transition-transform duration-300 -rotate-[30deg] left-[50%]"></div>
+                
+                <!-- Circle -->
+                <div class="w-full h-full rounded-full bg-pink-500 z-10 relative shadow-[0_0_10px_rgba(236,72,153,0.5)] flex items-start justify-start p-1 cursor-pointer">
+                    <!-- Reflection dot -->
+                    <div class="w-1.5 h-1.5 bg-white/70 rounded-full"></div>
+                </div>
+            </div>
+        </button>
+
+        <span id="labelEn" class="text-xs font-bold tracking-widest cursor-pointer transition-colors duration-300 text-slate-400" onclick="setLanguage('en')">ENGLISH</span>
+    </div>
+
+    <script>
+        let currentLang = 'hi';
+
+        function applyLanguageUI() {
+            const labelHi = document.getElementById('labelHi');
+            const labelEn = document.getElementById('labelEn');
+            const knob = document.getElementById('langToggleKnob');
+            const stick = document.getElementById('langToggleStick');
+
+            if (currentLang === 'hi') {
+                labelHi.className = "text-xs font-bold tracking-widest cursor-pointer transition-colors duration-300 text-pink-500 uppercase";
+                labelEn.className = "text-xs font-bold tracking-widest cursor-pointer transition-colors duration-300 text-slate-400 uppercase";
+                knob.style.transform = "translateX(0)";
+                stick.style.transform = "rotate(-30deg)";
+                stick.style.left = "50%";
+                stick.style.right = "auto";
+                stick.style.transformOrigin = "left";
+            } else {
+                labelHi.className = "text-xs font-bold tracking-widest cursor-pointer transition-colors duration-300 text-slate-400 uppercase";
+                labelEn.className = "text-xs font-bold tracking-widest cursor-pointer transition-colors duration-300 text-pink-500 uppercase";
+                knob.style.transform = "translateX(24px)"; // 12w = 48px, knob is 20px. 48 - 20 + 8 (padding) = 36px? Wait, w-12 = 48px (border 2px). Track inner is 44px. Knob is 20px. So move by 44 - 20 + (4 left offset * 2) = 32px. Let's use 28px.
+                stick.style.transform = "rotate(-150deg)";
+                // Or simply flip the stick horizontally
+            }
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            applyLanguageUI();
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'hi' ? 'en' : 'hi';
+            applyLanguageUI();
+        }
+
+        // Fix stick flip logic:
+        // Actually, just pointing the stick towards the center.
+        // Norsk/Hi (left): stick origin center, extending to right-top.
+        // English/En (right): stick origin center, extending to left-top.
+    </script>
+</body>
+</html>
