@@ -35,7 +35,13 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model) {
-        List<Alert> alerts = alertService.getAllAlerts();
+        List<Alert> alerts;
+        try {
+            alerts = alertService.getAllAlerts();
+        } catch (Exception e) {
+            System.err.println("HomeController: Could not load alerts (DB unavailable): " + e.getMessage());
+            alerts = java.util.Collections.emptyList();
+        }
         long criticalCount = alerts.stream()
                 .filter(a -> a.getSeverity() == Severity.CRITICAL)
                 .count();
