@@ -92,6 +92,7 @@ public class GroqWhisperService {
     private boolean apiKeyPresent() {
         return apiKey != null && !apiKey.isBlank()
                 && !apiKey.equals("YOUR_GROQ_API_KEY_HERE")
-                && !apiKey.equals("gsk_xxxxxxxxxxxxxx");
+                && !apiKey.equals("gsk_xxxxxxxxxxxxxx")
+                && !apiKey.equals("demo_key");
     }
 }
