@@ -1,53 +1,315 @@
-# Nagar Alert Hub - Project Summary
+# Nagar Alert Hub — Project Summary (v4.1)
 
 ## Overview
-**Nagar Alert Hub** is a Spring Boot web application designed to empower citizens to report public disruptions and emergencies (e.g., accidents, fires, potholes). The system streamlines civic reporting by automatically categorizing incidents, tracking their status, and allowing the community to stay informed with real-time updates and secure logins.
 
-## Key Features & Architecture
+**Nagar Alert Hub** is a Spring Boot civic-tech web application that empowers citizens to report public disruptions and emergencies (fires, accidents, potholes, power outages) in real time. It uses AI for automatic classification, Leaflet.js for live maps, and Twilio for WhatsApp feedback — ensuring every complaint is visible, trackable, and resolved.
 
-### 1. Alert Reporting, Voice Input & Media Uploads
-- **Submission:** Citizens can submit alerts with a description, location, and optionally a phone number — by typing or by speaking.
-- **🎙️ Voice-to-Text (Groq Whisper):** A prominent "Tap to Speak Your Emergency" button lets citizens record their emergency verbally. The recording is transcribed server-side via the **Groq Whisper large-v3** model (`/api/transcribe`) and auto-fills the description field. Visual feedback includes:
-  - Animated 7-bar **waveform** during recording
-  - Live **recording timer** (0:00 counting up)
-  - Mic icon → waveform → spinner state transitions
-  - Green flash + smooth scroll to the description field on successful transcription
-  - Inline error messages (no disruptive alerts) on failure
-- **Photo Attachments:** Citizens can attach photos of incidents (e.g., broken pipes, hazards). Photos are securely stored locally in an `/uploads` directory and presented as thumbnails in the Admin Panel for visceral, credible evidence.
-- **Geocoding:** If a location is provided manually without map coordinates, the system dynamically geocodes it using OpenStreetMap Nominatim before submission.
+---
 
-### 2. Live Map Clustering & Feed
-- **Interactive Map:** Uses **Leaflet.js** and OpenStreetMap tiles to visualize all active alerts.
-- **Hotspot Clustering:** Integrates the **Leaflet.markercluster** plugin. When multiple alerts occur in the same area, they aggregate into numbered cluster bubbles to prevent UI clutter. The clusters auto-expand dynamically on zoom.
-- **Live Feed:** The map feed displays real-time department emojis to visually indicate routing, and alerts are color-coded by severity.
+## System Architecture
 
-### 3. Inclusive Multilingual Support
-- **UI Translation:** Features a premium, arcade-style language toggle across all citizen and admin pages, allowing seamless switching between **English (EN)** and **Hindi (हिं)**.
-- **Native Hindi Processing:** The AI backend natively understands and categorizes Hindi descriptions, requiring no extra translation layer for the classifier.
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     FRONTEND (Thymeleaf)                        │
+│  TailwindCSS  |  Leaflet.js  |  Chart.js  |  Accessibility UI  │
+└────────────────────────────┬────────────────────────────────────┘
+                             │ HTTP / REST
+                             ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                  SPRING BOOT APPLICATION                        │
+│                                                                 │
+│  Controllers: Home, Auth, Admin, API, Profile                   │
+│  Services:    AlertService, AlertManager, WhatsAppNotification, │
+│               GroqWhisperService                                │
+│  Utils:       AiDepartmentClassifier, SeverityDetector,        │
+│               DepartmentClassifier (fallback), GeoUtils         │
+│  Threads:     AutoCleanup (@Scheduled hourly)                   │
+│  Security:    Spring Security + OAuth2 (Google/Facebook)        │
+└──────────────┬───────────────────────────┬──────────────────────┘
+               │                           │
+               ▼                           ▼
+  ┌────────────────────┐       ┌───────────────────────┐
+  │   MongoDB Atlas    │       │   External APIs        │
+  │   nagaralertdb     │       │                        │
+  │   - alerts         │       │  Groq API (NLP + STT)  │
+  │   - users          │       │  Twilio (WhatsApp)     │
+  └────────────────────┘       │  OSM Nominatim (Geo)   │
+                               └───────────────────────┘
+```
 
-### 4. Automated Classification & Voice Transcription (Groq AI / ML)
-- **Department Prediction:** Powered by the **Groq API**, the system uses an AI classifier to intelligently route alerts to the correct department (Police, Fire, Medical, Electrical, Municipal, Traffic) based on natural language understanding.
-- **Voice Transcription:** The **Groq Whisper large-v3** model transcribes recorded audio (WebM/OGG) into text server-side via a dedicated `/api/transcribe` REST endpoint, feeding directly into the same AI classification pipeline — voice and text reports are treated identically downstream.
-- **Keyword Fallback (Resilience):** If the API times out or is unreachable, the system automatically and silently falls back to a custom, heavily weighted keyword & bigram heuristic classifier, ensuring zero downtime during emergencies.
-- **Severity Detection:** Automatically assigns a severity level (Critical, High, Medium, Low) based on critical keyword and domain phrase matching.
+---
 
-### 5. Admin Portal, Analytics & Security
-- **Spring Security Integration:** The application uses **Spring Security** to securely isolate the `/admin/**` endpoints. 
-- **Analytics Dashboard:** Admins can access a dedicated dashboard powered by **Chart.js**, featuring donut and bar charts for key metrics like Total Alerts, Resolution Rates, and Alerts by Severity/Department.
-- **Status Management:** Admins can securely view, search, verify, change status, and delete alerts. 
+## Feature Breakdown
 
-### 6. OAuth2 Authentication
-- **Social Login:** Citizens authenticate securely using Google or Facebook via Spring Security OAuth2.
-- **Profile Management:** User profiles and authentication details are automatically synced and stored in MongoDB.
+### 1. Alert Reporting — Voice, Text, Photo
 
-### 7. Real-time WhatsApp Notifications
-- **Twilio Integration:** Citizens receive instantaneous WhatsApp notifications when their alert is registered and whenever the admin updates the status (e.g., Pending -> In Progress -> Resolved), ensuring a closed trust loop.
+**Flow diagram:**
+```
+Citizen Input
+     │
+     ├── 🎙️ Voice ──▶ MediaRecorder (WebM/OGG)
+     │                     │
+     │              POST /api/transcribe
+     │                     │
+     │              Groq Whisper large-v3
+     │                     │
+     │              text ──▶ Description field (auto-fill)
+     │
+     ├── 📝 Text ──▶ Textarea (manual entry)
+     │
+     ├── 📍 Location ──▶ GPS auto-detect  OR
+     │                   Manual text entry  OR
+     │                   Map modal pin pick
+     │                         │
+     │                   Nominatim geocoding
+     │                   (lat/lng resolved)
+     │
+     └── 📷 Photo ──▶ Drag & drop / file picker
+                       Stored in /uploads
+                       Shown as thumbnail in Admin
+```
 
-### 8. Auto-Cleanup Thread
-- A `@Scheduled` background task runs every hour. It automatically sweeps the database and removes `RESOLVED` alerts that are older than 24 hours. This keeps the database clean and relevant.
+**Voice recording states:**
+```
+  [IDLE]          [RECORDING]        [TRANSCRIBING]     [DONE]
+   🎙️ icon    →   🔴 waveform    →    ⏳ spinner    →  ✅ text filled
+                  |||||||||              
+                  timer: 0:23           Groq Whisper
+```
 
-### 9. Technical Stack
-- **Backend:** Java 17, Spring Boot, Spring Security, OAuth2 Client
-- **Database:** MongoDB mapped via Spring Data MongoDB
-- **Frontend:** Thymeleaf templates, TailwindCSS, Leaflet.js (maps), Chart.js (analytics)
-- **Integrations:** Twilio API (WhatsApp Notifications), Groq API (AI Classification + Whisper Voice Transcription), OpenStreetMap Nominatim (Geocoding)
+---
+
+### 2. AI Classification Pipeline
+
+```
+Description Text (natural language, Hindi or English)
+          │
+          ▼
+  ┌───────────────────┐
+  │   Groq LLaMA API  │  ──▶ {"department": "Fire", "severity": "HIGH"}
+  │   (primary)       │
+  └─────────┬─────────┘
+            │ (on timeout / failure)
+            ▼
+  ┌───────────────────┐
+  │  Keyword + Bigram │  ──▶ Fallback classification (100% uptime)
+  │  Classifier       │       e.g. "fire" → FIRE dept
+  └───────────────────┘
+
+  Severity scale:  CRITICAL ▶ HIGH ▶ MEDIUM ▶ LOW
+  Departments:     Police  Fire  Medical  Electrical  Municipal  Traffic
+```
+
+---
+
+### 3. Live Map & Alert Feed
+
+```
+  ┌────────────────────────────────────────────────────┐
+  │              Leaflet.js Interactive Map             │
+  │                                                    │
+  │   👮  ──── single alert pin (blue = LOW)           │
+  │   🚒  ──── single alert pin (orange = HIGH)        │
+  │   🔴  ──── single alert pin (red = CRITICAL)       │
+  │   🟢  ──── resolved pin (green)                    │
+  │                                                    │
+  │   ③  ──── cluster bubble (3 alerts in same area)  │
+  │        auto-expands on zoom                        │
+  └────────────────────────────────────────────────────┘
+
+  Alert Feed (below map):
+  ┌─────────────────────────────────────────────────┐
+  │ Status filter: [All] [Critical] [Pending] [Resolved]│
+  │ Dept filter:   [All] [👮] [🚒] [🚑] [⚡] [🏗️] [🚦] │
+  │                 ▲ Combined filtering logic         │
+  └─────────────────────────────────────────────────┘
+
+  Alert Card (collapsed):
+  ┌──────────────────────────────────────────┐
+  │▌ ⏳ PENDING  HIGH  📍 Gandhi Maidan      │
+  │  "Fire near the bakery on main road"     │
+  │  🕒 13 Jul  🏢 Fire  [Me Too 3]  🚒  ⌄  │
+  └──────────────────────────────────────────┘
+
+  Alert Card (expanded — click to toggle):
+  ┌──────────────────────────────────────────┐
+  │▌ ⏳ PENDING  HIGH  📍 Gandhi Maidan      │
+  │  "Fire near the bakery..."               │
+  │  🕒 13 Jul  🏢 Fire  [Me Too 3]  🚒  ⌃  │
+  │  ──────────────────────────────────────  │
+  │  Alert ID: #A1042                        │
+  │  📡 GPS: 25.6102, 85.1412               │
+  │  👥 3 reporting this                    │
+  │  [📸 incident photo thumbnail]          │
+  │  [🗺️ View on Map] ← flies map to pin   │
+  └──────────────────────────────────────────┘
+```
+
+---
+
+### 4. Multilingual Support
+
+```
+  [EN ←──── toggle ────▶ हिं]
+       Arcade lever UI
+  
+  - All UI labels translated (data-i18n attributes)
+  - Placeholder text translated
+  - Voice button label switches language
+  - Typing animation cycles language-appropriate phrases
+  - Groq AI processes Hindi descriptions natively
+  - Stored in localStorage (persists across sessions)
+```
+
+---
+
+### 5. Admin Portal
+
+```
+  /admin (Spring Security protected — ROLE_ADMIN only)
+  │
+  ├── 📊 Analytics Dashboard
+  │     - Chart.js donut: alerts by department
+  │     - Chart.js bar: alerts by severity
+  │     - KPI cards: total, pending, resolved, critical
+  │
+  ├── 📋 Alert Table
+  │     - Search by description / location
+  │     - Filter by department, severity, status
+  │     - View photo evidence
+  │     - Change status: PENDING → IN_PROGRESS → RESOLVED
+  │     - Delete alert
+  │
+  └── 👥 User Management (/admin/users)
+        - View registered citizens
+        - OAuth2 profile sync details
+```
+
+---
+
+### 6. Notification Flow (Twilio WhatsApp)
+
+```
+  Event: Alert submitted
+    └──▶ WhatsApp: "Your alert #A1042 has been received. Status: PENDING"
+
+  Event: Admin sets IN_PROGRESS
+    └──▶ WhatsApp: "Update: Your alert is now IN PROGRESS 👷"
+
+  Event: Admin sets RESOLVED
+    └──▶ WhatsApp: "Your alert has been RESOLVED ✅ Thank you for reporting!"
+
+  Sandbox mode: Citizens scan Twilio QR code to opt in (bottom-right FAB)
+```
+
+---
+
+### 7. Auto-Cleanup Background Thread
+
+```
+  @Scheduled (every 1 hour)
+       │
+       ▼
+  Query: find alerts WHERE status = RESOLVED
+                      AND timestamp < (now - 24 hours)
+       │
+       ▼
+  Delete stale resolved alerts
+  (keeps database lean and map clutter-free)
+```
+
+---
+
+### 8. OAuth2 Authentication
+
+```
+  /login
+    │
+    ├── Google OAuth2 ──▶ Spring Security ──▶ MongoDB (AppUser)
+    └── Facebook OAuth2 ─▶ Spring Security ──▶ MongoDB (AppUser)
+
+  Profile photo auto-fetched from OAuth provider
+  Shown in navbar avatar
+  Phone number collected post-login (/require-phone) if not set
+```
+
+---
+
+### 9. Accessibility
+
+```
+  Accessibility bar (top of every page):
+  - Font size: A  A+  A++
+  - High contrast mode toggle
+  - Light mode toggle
+  - Screen reader friendly labels (aria-label on all interactive elements)
+  - Keyboard navigation support
+```
+
+---
+
+## v4.1 New Homepage Features
+
+### Typing Animation
+```
+  "Stay Safe Together.|"  →  delete  →  "Report. Get Help.|"
+                                    ▲
+                            blinking cursor (CSS)
+                            60ms per char type, 35ms per delete
+                            2.2s pause at full phrase
+                            switches phrases per current language
+```
+
+### How It Works Section
+```
+  ┌─────────────┐    ──────    ┌─────────────┐    ──────    ┌─────────────┐
+  │     📍      │             │     🎙️      │             │     🚀      │
+  │  Step 1     │             │  Step 2     │             │  Step 3     │
+  │  Locate     │             │  Describe   │             │  Submit &   │
+  │  Incident   │             │  or Speak   │             │  Track      │
+  └─────────────┘             └─────────────┘             └─────────────┘
+   hover: blue glow            hover: purple glow           hover: green glow
+   desktop connector lines between cards (gradient)
+```
+
+### Toast Notification
+```
+  Form submit ──▶  ┌──────────────────────────────────────┐
+                   │ ✅ Report submitted! Authorities have │  ← bottom-center
+                   │    been notified.                     │     animated in
+                   └──────────────────────────────────────┘     auto-dismiss 3.5s
+```
+
+### Scroll-to-Top Button
+```
+  scroll > 400px  ──▶  [⬆] appears bottom-left
+  click           ──▶  smooth scroll to top
+```
+
+### Emergency Footer Bar
+```
+  👮 Police  🚒 Fire  🚑 Ambulance  ⚡ Electricity  🆘 Emergency
+     100        101        108           1912              112
+  Tap on mobile = direct call (tel: links)
+  Hover = lift + glow animation
+```
+
+---
+
+## Technical Stack Summary
+
+| Component | Technology | Purpose |
+|---|---|---|
+| Backend framework | Spring Boot 3.5 | REST API + MVC |
+| Language | Java 17 | Core logic |
+| Security | Spring Security + OAuth2 | Auth, role-based access |
+| Database | MongoDB Atlas | Alert + user storage |
+| Template engine | Thymeleaf | Server-side HTML rendering |
+| CSS framework | TailwindCSS | Glassmorphism UI |
+| Maps | Leaflet.js + MarkerCluster | Interactive city map |
+| Charts | Chart.js | Admin analytics |
+| AI classification | Groq API (LLaMA) | Dept + severity detection |
+| Voice transcription | Groq Whisper large-v3 | Speech-to-text |
+| Notifications | Twilio API | WhatsApp alerts |
+| Geocoding | OSM Nominatim | Address ↔ lat/lng |
+| Containerization | Docker | Deployment ready |
