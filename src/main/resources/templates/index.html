@@ -166,6 +166,68 @@
             }
         }
 
+        /* Voice waveform bar animations */
+        @keyframes waveBar {
+
+            0%,
+            100% {
+                transform: scaleY(0.3);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+        }
+
+        .voice-wave-bar {
+            width: 4px;
+            height: 24px;
+            border-radius: 2px;
+            background: currentColor;
+            transform-origin: center bottom;
+            animation: waveBar 0.8s ease-in-out infinite;
+        }
+
+        .voice-wave-bar:nth-child(2) {
+            animation-delay: 0.12s;
+        }
+
+        .voice-wave-bar:nth-child(3) {
+            animation-delay: 0.24s;
+        }
+
+        .voice-wave-bar:nth-child(4) {
+            animation-delay: 0.36s;
+        }
+
+        .voice-wave-bar:nth-child(5) {
+            animation-delay: 0.48s;
+        }
+
+        .voice-wave-bar:nth-child(6) {
+            animation-delay: 0.12s;
+        }
+
+        .voice-wave-bar:nth-child(7) {
+            animation-delay: 0.0s;
+        }
+
+        #voiceBtn.recording {
+            background: linear-gradient(to right, rgba(220, 38, 38, 0.55), rgba(239, 68, 68, 0.30));
+            border-color: rgba(239, 68, 68, 0.8);
+            color: #fca5a5;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.35);
+        }
+
+        #voiceBtn.transcribing {
+            background: linear-gradient(to right, rgba(37, 99, 235, 0.4), rgba(99, 102, 241, 0.25));
+            border-color: rgba(99, 102, 241, 0.6);
+            color: #a5b4fc;
+            animation: pulseSoft 1.2s ease-in-out infinite;
+        }
+
         @media (max-width: 768px) {
             .hero-stats-grid {
                 grid-template-columns: repeat(3, 1fr);
@@ -297,8 +359,11 @@
 
     <!-- Background Decoration -->
     <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-900/20 rounded-full blur-[100px] animate-float"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-900/20 rounded-full blur-[100px] animate-float" style="animation-delay: -3s;"></div>
+        <div
+            class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-900/20 rounded-full blur-[100px] animate-float">
+        </div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-900/20 rounded-full blur-[100px] animate-float"
+            style="animation-delay: -3s;"></div>
         <div class="absolute top-[40%] right-[20%] w-[25%] h-[25%] bg-indigo-900/10 rounded-full blur-[80px]"></div>
     </div>
 
@@ -311,30 +376,42 @@
                 <div class="flex justify-between items-center py-3 sm:py-4">
                     <!-- Logo -->
                     <a href="/" class="flex items-center space-x-2 sm:space-x-3 group shrink-0">
-                        <div class="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-xl flex items-center justify-center text-lg sm:text-xl shadow-lg shadow-blue-900/50 group-hover:scale-105 group-hover:shadow-blue-500/30 transition-all duration-300">
+                        <div
+                            class="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-xl flex items-center justify-center text-lg sm:text-xl shadow-lg shadow-blue-900/50 group-hover:scale-105 group-hover:shadow-blue-500/30 transition-all duration-300">
                             📢
                         </div>
                         <div>
-                            <h1 class="text-base sm:text-lg md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400 tracking-tight leading-tight">
+                            <h1
+                                class="text-base sm:text-lg md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400 tracking-tight leading-tight">
                                 Nagar Alert Hub
                             </h1>
-                            <p class="text-[10px] text-slate-500 font-medium tracking-wider uppercase hidden sm:block" data-i18n="nav_tagline">City Safety Platform</p>
+                            <p class="text-[10px] text-slate-500 font-medium tracking-wider uppercase hidden sm:block"
+                                data-i18n="nav_tagline">City Safety Platform</p>
                         </div>
                     </a>
 
                     <!-- Desktop Nav Links -->
                     <div class="hidden lg:flex items-center space-x-1 mx-4">
-                        <a href="#hero" class="nav-link active px-3 py-2 text-sm font-medium text-slate-300 hover:text-white rounded-lg hover:bg-white/5" data-i18n="nav_home">Home</a>
-                        <a href="#report-section" class="nav-link px-3 py-2 text-sm font-medium text-slate-300 hover:text-white rounded-lg hover:bg-white/5" data-i18n="nav_report">Report</a>
-                        <a href="#live-section" class="nav-link px-3 py-2 text-sm font-medium text-slate-300 hover:text-white rounded-lg hover:bg-white/5" data-i18n="nav_live">Live Map</a>
-                        <a href="/my-alerts" class="nav-link px-3 py-2 text-sm font-medium text-slate-300 hover:text-white rounded-lg hover:bg-white/5" data-i18n="nav_track">Track Alert</a>
+                        <a href="#hero"
+                            class="nav-link active px-3 py-2 text-sm font-medium text-slate-300 hover:text-white rounded-lg hover:bg-white/5"
+                            data-i18n="nav_home">Home</a>
+                        <a href="#report-section"
+                            class="nav-link px-3 py-2 text-sm font-medium text-slate-300 hover:text-white rounded-lg hover:bg-white/5"
+                            data-i18n="nav_report">Report</a>
+                        <a href="#live-section"
+                            class="nav-link px-3 py-2 text-sm font-medium text-slate-300 hover:text-white rounded-lg hover:bg-white/5"
+                            data-i18n="nav_live">Live Map</a>
+                        <a href="/my-alerts"
+                            class="nav-link px-3 py-2 text-sm font-medium text-slate-300 hover:text-white rounded-lg hover:bg-white/5"
+                            data-i18n="nav_track">Track Alert</a>
                     </div>
 
                     <!-- Right Actions -->
                     <div class="flex items-center space-x-2 sm:space-x-3">
                         <th:block th:replace="~{accessibility :: arcade-language-toggle}"></th:block>
 
-                        <a href="/my-alerts" class="hidden md:inline-flex px-3 py-2 text-sm font-semibold text-blue-400 hover:text-blue-300 transition hover:bg-blue-500/10 rounded-full"
+                        <a href="/my-alerts"
+                            class="hidden md:inline-flex px-3 py-2 text-sm font-semibold text-blue-400 hover:text-blue-300 transition hover:bg-blue-500/10 rounded-full"
                             data-i18n="nav_track_short">Track</a>
 
                         <div sec:authorize="hasRole('ADMIN')">
@@ -350,7 +427,8 @@
                                     th:src="${#authentication.principal.attributes.picture}" alt="Profile"
                                     class="w-full h-full object-cover">
                                 <div th:unless="${#authentication.principal.attributes.picture != null}"
-                                    class="w-full h-full bg-slate-800 flex items-center justify-center text-base">👤</div>
+                                    class="w-full h-full bg-slate-800 flex items-center justify-center text-base">👤
+                                </div>
                             </a>
                             <form sec:authorize="hasRole('ADMIN')" action="/logout" method="post" class="inline m-0">
                                 <button type="submit"
@@ -379,12 +457,22 @@
                 <!-- Mobile Menu -->
                 <div id="mobileMenu" class="lg:hidden border-t border-slate-800/50">
                     <div class="py-3 space-y-1">
-                        <a href="#hero" class="mobile-nav-link block px-4 py-3 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition" data-i18n="nav_home">Home</a>
-                        <a href="#report-section" class="mobile-nav-link block px-4 py-3 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition" data-i18n="nav_report">Report Incident</a>
-                        <a href="#live-section" class="mobile-nav-link block px-4 py-3 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition" data-i18n="nav_live">Live Map & Feed</a>
-                        <a href="/my-alerts" class="block px-4 py-3 text-sm font-medium text-blue-400 hover:bg-blue-500/10 rounded-xl transition" data-i18n="nav_track">Track My Alert</a>
+                        <a href="#hero"
+                            class="mobile-nav-link block px-4 py-3 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition"
+                            data-i18n="nav_home">Home</a>
+                        <a href="#report-section"
+                            class="mobile-nav-link block px-4 py-3 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition"
+                            data-i18n="nav_report">Report Incident</a>
+                        <a href="#live-section"
+                            class="mobile-nav-link block px-4 py-3 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition"
+                            data-i18n="nav_live">Live Map & Feed</a>
+                        <a href="/my-alerts"
+                            class="block px-4 py-3 text-sm font-medium text-blue-400 hover:bg-blue-500/10 rounded-xl transition"
+                            data-i18n="nav_track">Track My Alert</a>
                         <div sec:authorize="hasRole('ADMIN')" class="px-4 pt-1">
-                            <a href="/admin" class="block py-3 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition" data-i18n="nav_admin">Admin Portal →</a>
+                            <a href="/admin"
+                                class="block py-3 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition"
+                                data-i18n="nav_admin">Admin Portal →</a>
                         </div>
                     </div>
                 </div>
@@ -400,12 +488,17 @@
     <!-- Hero Section -->
     <section id="hero" class="container mx-auto px-4 sm:px-6 pt-8 sm:pt-12 pb-6 reveal">
         <div class="relative overflow-hidden glass rounded-3xl p-6 sm:p-10 lg:p-12 border border-slate-700/50">
-            <div class="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
-            <div class="absolute bottom-0 left-0 w-48 h-48 bg-purple-600/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4 pointer-events-none"></div>
+            <div
+                class="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none">
+            </div>
+            <div
+                class="absolute bottom-0 left-0 w-48 h-48 bg-purple-600/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4 pointer-events-none">
+            </div>
 
             <div class="relative grid lg:grid-cols-2 gap-8 items-center">
                 <div class="space-y-5">
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+                    <div
+                        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-wider">
                         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                         <span data-i18n="hero_live">Live City Monitoring</span>
                     </div>
@@ -414,7 +507,8 @@
                         <span class="hero-gradient-text" data-i18n="hero_title_2">Stay Safe Together.</span>
                     </h2>
                     <p class="text-slate-400 text-base sm:text-lg max-w-lg leading-relaxed" data-i18n="hero_desc">
-                        Your city's real-time alert platform. Report incidents instantly, track responses, and help keep your community safe.
+                        Your city's real-time alert platform. Report incidents instantly, track responses, and help keep
+                        your community safe.
                     </p>
                     <div class="flex flex-wrap gap-3 pt-2">
                         <a href="#report-section"
@@ -432,37 +526,56 @@
 
                 <!-- Inline Hero Stats -->
                 <div class="hero-stats-grid grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3 gap-4">
-                    <div class="metric-card glass p-4 sm:p-5 rounded-2xl border border-slate-700/50 text-center sm:text-left">
-                        <div class="w-10 h-10 mx-auto sm:mx-0 rounded-xl bg-red-500/20 flex items-center justify-center text-red-400 border border-red-500/30 text-lg mb-3">🔴</div>
-                        <p class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-wider" data-i18n="metric_active">Active</p>
-                        <p class="text-2xl sm:text-3xl font-bold text-white counter" th:attr="data-target=${activeCount}">0</p>
+                    <div
+                        class="metric-card glass p-4 sm:p-5 rounded-2xl border border-slate-700/50 text-center sm:text-left">
+                        <div
+                            class="w-10 h-10 mx-auto sm:mx-0 rounded-xl bg-red-500/20 flex items-center justify-center text-red-400 border border-red-500/30 text-lg mb-3">
+                            🔴</div>
+                        <p class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-wider"
+                            data-i18n="metric_active">Active</p>
+                        <p class="text-2xl sm:text-3xl font-bold text-white counter"
+                            th:attr="data-target=${activeCount}">0</p>
                     </div>
-                    <div class="metric-card glass p-4 sm:p-5 rounded-2xl border border-slate-700/50 text-center sm:text-left">
-                        <div class="w-10 h-10 mx-auto sm:mx-0 rounded-xl bg-green-500/20 flex items-center justify-center text-green-400 border border-green-500/30 text-lg mb-3">🟢</div>
-                        <p class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-wider" data-i18n="metric_resolved">Resolved</p>
-                        <p class="text-2xl sm:text-3xl font-bold text-white counter" th:attr="data-target=${resolvedCount}">0</p>
+                    <div
+                        class="metric-card glass p-4 sm:p-5 rounded-2xl border border-slate-700/50 text-center sm:text-left">
+                        <div
+                            class="w-10 h-10 mx-auto sm:mx-0 rounded-xl bg-green-500/20 flex items-center justify-center text-green-400 border border-green-500/30 text-lg mb-3">
+                            🟢</div>
+                        <p class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-wider"
+                            data-i18n="metric_resolved">Resolved</p>
+                        <p class="text-2xl sm:text-3xl font-bold text-white counter"
+                            th:attr="data-target=${resolvedCount}">0</p>
                     </div>
-                    <div class="metric-card glass p-4 sm:p-5 rounded-2xl border border-slate-700/50 text-center sm:text-left">
-                        <div class="w-10 h-10 mx-auto sm:mx-0 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400 border border-indigo-500/30 text-lg mb-3">📡</div>
-                        <p class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-wider" data-i18n="metric_status">Status</p>
-                        <p class="text-lg sm:text-xl font-bold text-white" th:text="${criticalCount > 0 ? 'Action Required' : 'All Clear'}">All Clear</p>
+                    <div
+                        class="metric-card glass p-4 sm:p-5 rounded-2xl border border-slate-700/50 text-center sm:text-left">
+                        <div
+                            class="w-10 h-10 mx-auto sm:mx-0 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400 border border-indigo-500/30 text-lg mb-3">
+                            📡</div>
+                        <p class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-wider"
+                            data-i18n="metric_status">Status</p>
+                        <p class="text-lg sm:text-xl font-bold text-white"
+                            th:text="${criticalCount > 0 ? 'Action Required' : 'All Clear'}">All Clear</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <div id="main-content" class="container mx-auto mt-4 sm:mt-6 px-4 sm:px-6 pb-6 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+    <div id="main-content"
+        class="container mx-auto mt-4 sm:mt-6 px-4 sm:px-6 pb-6 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
 
         <!-- Report Form Column (Right) -->
         <div id="report-section" class="lg:col-span-4 xl:col-span-4 order-2 lg:order-2 reveal">
             <div class="glass p-6 sm:p-8 rounded-2xl shadow-md lg:sticky lg:top-28 border border-slate-700/50">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl sm:text-2xl font-bold text-white flex items-center">
-                        <span class="mr-3 w-10 h-10 rounded-xl bg-blue-600/20 flex items-center justify-center text-blue-400 border border-blue-500/30">✍️</span>
+                        <span
+                            class="mr-3 w-10 h-10 rounded-xl bg-blue-600/20 flex items-center justify-center text-blue-400 border border-blue-500/30">✍️</span>
                         <span data-i18n="form_title">Report Incident</span>
                     </h2>
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-800/50 px-2 py-1 rounded-lg" data-i18n="form_badge">Quick Form</span>
+                    <span
+                        class="text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-800/50 px-2 py-1 rounded-lg"
+                        data-i18n="form_badge">Quick Form</span>
                 </div>
                 <form id="reportForm" action="/report" method="post" enctype="multipart/form-data" class="space-y-5">
 
@@ -472,9 +585,37 @@
                     <!-- Voice Reporting (Groq Whisper) -->
                     <div>
                         <button type="button" id="voiceBtn" onclick="toggleVoiceRecording()"
-                            class="w-full relative overflow-hidden bg-gradient-to-r from-red-900/40 to-rose-800/20 hover:from-red-800/50 hover:to-rose-700/30 text-red-300 border border-red-500/40 py-4 rounded-xl text-sm font-bold transition-all duration-300 flex items-center justify-center gap-3 group active:scale-[0.98]">
-                            <span id="voiceIcon" class="text-2xl animate-pulse-soft">🎙️</span>
-                            <span id="voiceLabel" data-i18n="btn_voice">Tap to speak your emergency</span>
+                            class="w-full relative overflow-hidden bg-gradient-to-r from-red-900/40 to-rose-800/20 hover:from-red-800/50 hover:to-rose-700/30 text-red-300 border border-red-500/40 py-4 rounded-xl text-sm font-bold transition-all duration-300 flex items-center justify-center gap-3 group active:scale-[0.98]"
+                            aria-label="Tap to speak your emergency">
+
+                            <!-- Idle state: mic icon -->
+                            <span id="voiceIconIdle" class="text-2xl animate-pulse-soft">🎙️</span>
+
+                            <!-- Recording state: waveform bars (hidden until recording) -->
+                            <span id="voiceWave" class="hidden items-center gap-[3px] text-red-400 h-6">
+                                <span class="voice-wave-bar"></span>
+                                <span class="voice-wave-bar"></span>
+                                <span class="voice-wave-bar"></span>
+                                <span class="voice-wave-bar"></span>
+                                <span class="voice-wave-bar"></span>
+                                <span class="voice-wave-bar"></span>
+                                <span class="voice-wave-bar"></span>
+                            </span>
+
+                            <!-- Transcribing state: spinner (hidden until transcribing) -->
+                            <span id="voiceSpinner" class="hidden">
+                                <svg class="w-5 h-5 animate-spin text-indigo-400" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                </svg>
+                            </span>
+
+                            <span class="flex flex-col items-start leading-tight">
+                                <span id="voiceLabel" data-i18n="btn_voice">Tap to speak your emergency</span>
+                                <span id="voiceTimer"
+                                    class="text-xs font-mono font-normal opacity-70 hidden">0:00</span>
+                            </span>
                         </button>
                         <p id="voiceStatus" class="text-xs text-slate-500 mt-2 text-center hidden"></p>
                     </div>
@@ -483,8 +624,8 @@
                     <div>
                         <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2"
                             data-i18n="label_desc">Description</label>
-                        <textarea id="descriptionInput" name="description" rows="4" placeholder="Describe the incident clearly..."
-                            data-i18n-placeholder="ph_desc" required
+                        <textarea id="descriptionInput" name="description" rows="4"
+                            placeholder="Describe the incident clearly..." data-i18n-placeholder="ph_desc" required
                             class="w-full p-3 rounded-lg bg-slate-900/50 border border-slate-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none text-white transition placeholder-slate-600 resize-none"></textarea>
                     </div>
 
@@ -533,9 +674,11 @@
                             <input type="file" id="imageInput" name="image" accept="image/*" class="hidden">
                             <div id="dropPlaceholder">
                                 <span class="text-3xl mb-2 block opacity-60">📷</span>
-                                <p class="text-sm text-slate-400" data-i18n="drop_photo">Drag & drop photo here, or click to browse</p>
+                                <p class="text-sm text-slate-400" data-i18n="drop_photo">Drag & drop photo here, or
+                                    click to browse</p>
                             </div>
-                            <img id="dropPreview" class="hidden max-h-32 mx-auto rounded-lg border border-slate-600" alt="Preview">
+                            <img id="dropPreview" class="hidden max-h-32 mx-auto rounded-lg border border-slate-600"
+                                alt="Preview">
                         </div>
                     </div>
 
@@ -567,18 +710,29 @@
 
             <!-- Global Map Container -->
             <div class="relative group">
-                <div id="globalMap" class="w-full h-72 sm:h-80 lg:h-96 rounded-2xl shadow-[0_0_30px_rgba(59,130,246,0.1)] border border-slate-700 hover:border-blue-500/50 transition-all duration-300 z-0 overflow-hidden"></div>
-                <div class="absolute top-3 left-3 z-[400] glass px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 border border-slate-600/50 pointer-events-none">
+                <div id="globalMap"
+                    class="w-full h-72 sm:h-80 lg:h-96 rounded-2xl shadow-[0_0_30px_rgba(59,130,246,0.1)] border border-slate-700 hover:border-blue-500/50 transition-all duration-300 z-0 overflow-hidden">
+                </div>
+                <div
+                    class="absolute top-3 left-3 z-[400] glass px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 border border-slate-600/50 pointer-events-none">
                     📍 <span data-i18n="map_label">Interactive Map</span>
                 </div>
             </div>
 
             <!-- Alert Filters -->
             <div class="flex flex-wrap gap-2 pt-1" id="alertFilters">
-                <button type="button" data-filter="all" class="filter-pill active px-4 py-2 text-xs font-bold rounded-full border border-slate-600 text-slate-300 hover:border-slate-500" data-i18n="filter_all">All Alerts</button>
-                <button type="button" data-filter="critical" class="filter-pill px-4 py-2 text-xs font-bold rounded-full border border-slate-600 text-slate-300 hover:border-red-500/50 hover:text-red-400" data-i18n="filter_critical">Critical</button>
-                <button type="button" data-filter="pending" class="filter-pill px-4 py-2 text-xs font-bold rounded-full border border-slate-600 text-slate-300 hover:border-yellow-500/50 hover:text-yellow-400" data-i18n="filter_pending">Pending</button>
-                <button type="button" data-filter="resolved" class="filter-pill px-4 py-2 text-xs font-bold rounded-full border border-slate-600 text-slate-300 hover:border-green-500/50 hover:text-green-400" data-i18n="filter_resolved">Resolved</button>
+                <button type="button" data-filter="all"
+                    class="filter-pill active px-4 py-2 text-xs font-bold rounded-full border border-slate-600 text-slate-300 hover:border-slate-500"
+                    data-i18n="filter_all">All Alerts</button>
+                <button type="button" data-filter="critical"
+                    class="filter-pill px-4 py-2 text-xs font-bold rounded-full border border-slate-600 text-slate-300 hover:border-red-500/50 hover:text-red-400"
+                    data-i18n="filter_critical">Critical</button>
+                <button type="button" data-filter="pending"
+                    class="filter-pill px-4 py-2 text-xs font-bold rounded-full border border-slate-600 text-slate-300 hover:border-yellow-500/50 hover:text-yellow-400"
+                    data-i18n="filter_pending">Pending</button>
+                <button type="button" data-filter="resolved"
+                    class="filter-pill px-4 py-2 text-xs font-bold rounded-full border border-slate-600 text-slate-300 hover:border-green-500/50 hover:text-green-400"
+                    data-i18n="filter_resolved">Resolved</button>
             </div>
 
             <!-- Empty State -->
@@ -591,87 +745,88 @@
 
             <!-- Alerts List -->
             <div id="alertsList" class="space-y-4">
-            <div th:each="alert : ${alerts}"
-                class="alert-item fade-in group relative overflow-hidden glass rounded-xl p-0 hover:border-slate-500/80 hover:shadow-lg hover:shadow-blue-900/10 transition-all duration-300"
-                th:attr="data-severity=${alert.severity?.name()}, data-status=${alert.status?.name()}">
+                <div th:each="alert : ${alerts}"
+                    class="alert-item fade-in group relative overflow-hidden glass rounded-xl p-0 hover:border-slate-500/80 hover:shadow-lg hover:shadow-blue-900/10 transition-all duration-300"
+                    th:attr="data-severity=${alert.severity?.name()}, data-status=${alert.status?.name()}">
 
-                <!-- Severity Strip -->
-                <div class="absolute left-0 top-0 bottom-0 w-1.5 transition-colors duration-300" th:classappend="${alert.severity?.name() == 'CRITICAL'} ? 'bg-red-500' : 
+                    <!-- Severity Strip -->
+                    <div class="absolute left-0 top-0 bottom-0 w-1.5 transition-colors duration-300" th:classappend="${alert.severity?.name() == 'CRITICAL'} ? 'bg-red-500' : 
                                      (${alert.severity?.name() == 'HIGH'} ? 'bg-orange-500 shadow-[0_0_15px_rgba(249,115,22,0.4)]' : 
                                      (${alert.severity?.name() == 'MEDIUM'} ? 'bg-yellow-500' : 'bg-blue-500'))">
-                </div>
+                    </div>
 
-                <div class="p-5 pl-8 flex justify-between items-start">
-                    <div class="space-y-3 flex-1">
-                        <div class="flex items-center flex-wrap gap-2">
-                            <!-- Status Badges -->
-                            <span th:if="${alert.status?.name() == 'RESOLVED'}"
-                                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-green-500/20 text-green-400 ring-1 ring-inset ring-green-500/40">
-                                <span class="mr-1">✅</span> RESOLVED
-                            </span>
-                            <span th:if="${alert.status?.name() == 'IN_PROGRESS'}"
-                                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-blue-500/20 text-blue-400 ring-1 ring-inset ring-blue-500/40">
-                                <span class="mr-1">👷</span> IN PROGRESS
-                            </span>
-                            <span th:if="${alert.status?.name() == 'PENDING'}"
-                                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-yellow-500/10 text-yellow-500 ring-1 ring-inset ring-yellow-500/20">
-                                <span class="mr-1">⏳</span> PENDING
-                            </span>
+                    <div class="p-5 pl-8 flex justify-between items-start">
+                        <div class="space-y-3 flex-1">
+                            <div class="flex items-center flex-wrap gap-2">
+                                <!-- Status Badges -->
+                                <span th:if="${alert.status?.name() == 'RESOLVED'}"
+                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-green-500/20 text-green-400 ring-1 ring-inset ring-green-500/40">
+                                    <span class="mr-1">✅</span> RESOLVED
+                                </span>
+                                <span th:if="${alert.status?.name() == 'IN_PROGRESS'}"
+                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-blue-500/20 text-blue-400 ring-1 ring-inset ring-blue-500/40">
+                                    <span class="mr-1">👷</span> IN PROGRESS
+                                </span>
+                                <span th:if="${alert.status?.name() == 'PENDING'}"
+                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-yellow-500/10 text-yellow-500 ring-1 ring-inset ring-yellow-500/20">
+                                    <span class="mr-1">⏳</span> PENDING
+                                </span>
 
-                            <span
-                                class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold uppercase tracking-wide ring-1 ring-inset"
-                                th:classappend="${alert.severity?.name() == 'CRITICAL'} ? 'bg-red-400/10 text-red-400 ring-red-400/20' : 
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold uppercase tracking-wide ring-1 ring-inset"
+                                    th:classappend="${alert.severity?.name() == 'CRITICAL'} ? 'bg-red-400/10 text-red-400 ring-red-400/20' : 
                                                 (${alert.severity?.name() == 'HIGH'} ? 'bg-orange-400/10 text-orange-400 ring-orange-400/20' : 
                                                 (${alert.severity?.name() == 'MEDIUM'} ? 'bg-yellow-400/10 text-yellow-400 ring-yellow-400/20' : 
                                                 'bg-blue-400/10 text-blue-400 ring-blue-400/20'))"
-                                th:text="${alert.severity}">SEVERITY</span>
+                                    th:text="${alert.severity}">SEVERITY</span>
 
-                            <span class="text-slate-500 text-xs">•</span>
-                            <span class="text-slate-300 font-medium text-sm flex items-center">
-                                <span class="mr-1 opacity-70">📍</span>
-                                <span th:text="${alert.location}">Location</span>
-                            </span>
-                        </div>
-
-                        <p class="text-slate-200 text-lg leading-relaxed" th:text="${alert.description}">Description...
-                        </p>
-
-                        <div class="pt-2 flex flex-wrap items-center text-xs text-slate-500 font-mono gap-4">
-                            <div>
-                                <span class="mr-1">🕒</span>
-                                <span
-                                    th:text="${#temporals.format(alert.timestamp, 'dd MMM yyyy, hh:mm a')}">Time</span>
-                            </div>
-                            <div class="flex items-center">
-                                <span class="mr-1">🏢</span>
-                                <span th:text="${alert.department}" class="text-slate-400">DEPT</span>
+                                <span class="text-slate-500 text-xs">•</span>
+                                <span class="text-slate-300 font-medium text-sm flex items-center">
+                                    <span class="mr-1 opacity-70">📍</span>
+                                    <span th:text="${alert.location}">Location</span>
+                                </span>
                             </div>
 
-                            <!-- Upvote Form -->
-                            <form th:action="@{/alert/{id}/upvote(id=${alert.alertId})}" method="post"
-                                class="flex items-center m-0">
-                                <button type="submit"
-                                    class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors border border-slate-700 hover:border-slate-500 group">
-                                <span>Me Too</span>
-                                    <span class="font-bold" th:text="${alert.upvotes}">0</span>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
+                            <p class="text-slate-200 text-lg leading-relaxed" th:text="${alert.description}">
+                                Description...
+                            </p>
 
-                    <!-- Icon based on Severity/Dept -->
-                    <div
-                        class="hidden sm:flex items-center justify-center w-12 h-12 rounded-full bg-slate-800/50 text-2xl border border-slate-700 shadow-inner ml-4 shrink-0">
-                        <span th:if="${alert.department == 'Police'}">👮</span>
-                        <span th:if="${alert.department == 'Fire'}">🚒</span>
-                        <span th:if="${alert.department == 'Medical'}">🚑</span>
-                        <span th:if="${alert.department == 'Electrical'}">⚡</span>
-                        <span th:if="${alert.department == 'Municipal'}">🏗️</span>
-                        <span th:if="${alert.department == 'Traffic'}">🚦</span>
-                        <span th:if="${alert.department == null}">📢</span>
+                            <div class="pt-2 flex flex-wrap items-center text-xs text-slate-500 font-mono gap-4">
+                                <div>
+                                    <span class="mr-1">🕒</span>
+                                    <span
+                                        th:text="${#temporals.format(alert.timestamp, 'dd MMM yyyy, hh:mm a')}">Time</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="mr-1">🏢</span>
+                                    <span th:text="${alert.department}" class="text-slate-400">DEPT</span>
+                                </div>
+
+                                <!-- Upvote Form -->
+                                <form th:action="@{/alert/{id}/upvote(id=${alert.alertId})}" method="post"
+                                    class="flex items-center m-0">
+                                    <button type="submit"
+                                        class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors border border-slate-700 hover:border-slate-500 group">
+                                        <span>Me Too</span>
+                                        <span class="font-bold" th:text="${alert.upvotes}">0</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Icon based on Severity/Dept -->
+                        <div
+                            class="hidden sm:flex items-center justify-center w-12 h-12 rounded-full bg-slate-800/50 text-2xl border border-slate-700 shadow-inner ml-4 shrink-0">
+                            <span th:if="${alert.department == 'Police'}">👮</span>
+                            <span th:if="${alert.department == 'Fire'}">🚒</span>
+                            <span th:if="${alert.department == 'Medical'}">🚑</span>
+                            <span th:if="${alert.department == 'Electrical'}">⚡</span>
+                            <span th:if="${alert.department == 'Municipal'}">🏗️</span>
+                            <span th:if="${alert.department == 'Traffic'}">🚦</span>
+                            <span th:if="${alert.department == null}">📢</span>
+                        </div>
                     </div>
                 </div>
-            </div>
             </div>
         </div>
     </div>
@@ -680,13 +835,17 @@
     <footer class="mt-12 sm:mt-16 py-8 border-t border-slate-800">
         <div class="container mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-lg flex items-center justify-center text-sm">📢</div>
+                <div
+                    class="w-8 h-8 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-lg flex items-center justify-center text-sm">
+                    📢</div>
                 <span class="text-slate-500 text-sm font-medium">Nagar Alert Hub</span>
             </div>
             <p class="text-slate-600 text-sm" data-i18n="footer">&copy; 2026 Nagar Alert Hub. Protecting the City.</p>
             <div class="flex gap-4 text-sm">
-                <a href="#report-section" class="text-slate-500 hover:text-blue-400 transition" data-i18n="nav_report">Report</a>
-                <a href="/my-alerts" class="text-slate-500 hover:text-blue-400 transition" data-i18n="nav_track_short">Track</a>
+                <a href="#report-section" class="text-slate-500 hover:text-blue-400 transition"
+                    data-i18n="nav_report">Report</a>
+                <a href="/my-alerts" class="text-slate-500 hover:text-blue-400 transition"
+                    data-i18n="nav_track_short">Track</a>
             </div>
         </div>
     </footer>
@@ -996,57 +1155,157 @@
             this.submit(); // Submit the form programmatically
         });
 
-        /* Voice Recording (Groq Whisper) */
-        let mediaRecorder, audioChunks = [], isRecording = false;
-        async function toggleVoiceRecording() {
+        /* Voice Recording (Groq Whisper) — enhanced */
+        let mediaRecorder, audioChunks = [], isRecording = false, _timerInterval = null, _timerSecs = 0;
+
+        function _voiceSetState(state) {
+            // state: 'idle' | 'recording' | 'transcribing'
             const btn = document.getElementById('voiceBtn');
+            const iconIdle = document.getElementById('voiceIconIdle');
+            const wave = document.getElementById('voiceWave');
+            const spinner = document.getElementById('voiceSpinner');
             const label = document.getElementById('voiceLabel');
+            const timer = document.getElementById('voiceTimer');
             const status = document.getElementById('voiceStatus');
-            if (!isRecording) {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    mediaRecorder = new MediaRecorder(stream);
-                    audioChunks = [];
-                    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-                    mediaRecorder.onstop = async () => {
-                        stream.getTracks().forEach(t => t.stop());
-                        const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                        status.classList.remove('hidden');
-                        status.textContent = 'Transcribing...';
-                        const fd = new FormData();
-                        fd.append('audio', blob, 'recording.webm');
-                        try {
-                            const res = await fetch('/api/transcribe', { method: 'POST', body: fd });
-                            const data = await res.json();
-                            if (data.text) {
-                                document.getElementById('descriptionInput').value = data.text;
-                                status.textContent = '✓ Transcribed successfully';
-                                status.className = 'text-xs text-emerald-400 mt-2 text-center';
-                            } else {
-                                status.textContent = data.error || 'Transcription failed';
-                                status.className = 'text-xs text-red-400 mt-2 text-center';
-                            }
-                        } catch (e) {
-                            status.textContent = 'Transcription unavailable';
-                            status.className = 'text-xs text-red-400 mt-2 text-center';
-                        }
-                    };
-                    mediaRecorder.start();
-                    isRecording = true;
-                    btn.classList.add('ring-2', 'ring-red-500');
-                    label.textContent = 'Recording... tap to stop';
-                    status.classList.remove('hidden');
-                    status.textContent = '🔴 Listening...';
-                    status.className = 'text-xs text-red-400 mt-2 text-center';
-                } catch (e) {
-                    alert('Microphone access denied. Please allow microphone permission.');
-                }
-            } else {
+            const isHindi = document.documentElement.lang === 'hi';
+
+            // Reset all visual states first
+            btn.classList.remove('recording', 'transcribing', 'ring-2', 'ring-red-500');
+            iconIdle.classList.remove('hidden');
+            wave.classList.add('hidden'); wave.classList.remove('flex');
+            spinner.classList.add('hidden');
+            timer.classList.add('hidden');
+
+            if (state === 'idle') {
+                label.textContent = isHindi ? 'अपनी आपातकालीन स्थिति बोलें' : 'Tap to speak your emergency';
+                status.className = 'text-xs text-slate-500 mt-2 text-center hidden';
+                status.textContent = '';
+            } else if (state === 'recording') {
+                btn.classList.add('recording', 'ring-2', 'ring-red-500');
+                iconIdle.classList.add('hidden');
+                wave.classList.remove('hidden'); wave.classList.add('flex');
+                label.textContent = isHindi ? 'रोकने के लिए टैप करें' : 'Tap to stop recording';
+                timer.classList.remove('hidden');
+                status.className = 'text-xs text-red-400 mt-2 text-center';
+                status.textContent = '🔴 Listening…';
+                status.classList.remove('hidden');
+            } else if (state === 'transcribing') {
+                btn.classList.add('transcribing');
+                btn.disabled = true;
+                iconIdle.classList.add('hidden');
+                spinner.classList.remove('hidden');
+                label.textContent = isHindi ? 'लिप्यंतरण हो रहा है…' : 'Transcribing…';
+                status.className = 'text-xs text-indigo-400 mt-2 text-center';
+                status.textContent = '⏳ Processing your voice…';
+                status.classList.remove('hidden');
+            }
+        }
+
+        function _startTimer() {
+            _timerSecs = 0;
+            const timerEl = document.getElementById('voiceTimer');
+            timerEl.textContent = '0:00';
+            _timerInterval = setInterval(() => {
+                _timerSecs++;
+                const m = Math.floor(_timerSecs / 60);
+                const s = String(_timerSecs % 60).padStart(2, '0');
+                timerEl.textContent = `${m}:${s}`;
+            }, 1000);
+        }
+
+        function _stopTimer() {
+            clearInterval(_timerInterval);
+            _timerInterval = null;
+        }
+
+        async function toggleVoiceRecording() {
+            if (isRecording) {
+                // Stop recording — onstop handler takes it from here
                 mediaRecorder.stop();
                 isRecording = false;
-                btn.classList.remove('ring-2', 'ring-red-500');
-                label.textContent = document.documentElement.lang === 'hi' ? 'अपनी आपातकालीन स्थिति बोलें' : 'Tap to speak your emergency';
+                _stopTimer();
+                return;
             }
+
+            // Start recording
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                const status = document.getElementById('voiceStatus');
+                status.textContent = 'Voice recording is not supported in this browser.';
+                status.className = 'text-xs text-red-400 mt-2 text-center';
+                status.classList.remove('hidden');
+                return;
+            }
+
+            let stream;
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            } catch (err) {
+                const status = document.getElementById('voiceStatus');
+                status.textContent = 'Microphone access denied — please allow permission and try again.';
+                status.className = 'text-xs text-red-400 mt-2 text-center';
+                status.classList.remove('hidden');
+                return;
+            }
+
+            // Pick the best supported MIME type
+            const mimeType = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/ogg', '']
+                .find(m => m === '' || MediaRecorder.isTypeSupported(m));
+
+            audioChunks = [];
+            mediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+
+            mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+
+            mediaRecorder.onstop = async () => {
+                stream.getTracks().forEach(t => t.stop());
+                _voiceSetState('transcribing');
+
+                const blob = new Blob(audioChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+                const ext = (mediaRecorder.mimeType || '').includes('ogg') ? 'ogg' : 'webm';
+                const fd = new FormData();
+                fd.append('audio', blob, `recording.${ext}`);
+
+                try {
+                    const res = await fetch('/api/transcribe', { method: 'POST', body: fd });
+                    const data = await res.json();
+                    const btn = document.getElementById('voiceBtn');
+                    btn.disabled = false;
+
+                    if (data.text && data.text.trim()) {
+                        const descEl = document.getElementById('descriptionInput');
+                        descEl.value = data.text.trim();
+                        // Briefly flash the textarea to signal the fill
+                        descEl.classList.add('ring-2', 'ring-emerald-500');
+                        setTimeout(() => descEl.classList.remove('ring-2', 'ring-emerald-500'), 1800);
+                        // Scroll smoothly to the description field
+                        descEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        descEl.focus();
+
+                        const status = document.getElementById('voiceStatus');
+                        status.textContent = '✓ Transcribed — review and submit';
+                        status.className = 'text-xs text-emerald-400 mt-2 text-center';
+                    } else {
+                        const status = document.getElementById('voiceStatus');
+                        status.textContent = data.error || 'Could not transcribe — please try again or type manually.';
+                        status.className = 'text-xs text-red-400 mt-2 text-center';
+                    }
+                } catch (e) {
+                    document.getElementById('voiceBtn').disabled = false;
+                    const status = document.getElementById('voiceStatus');
+                    status.textContent = 'Transcription unavailable — please type your report.';
+                    status.className = 'text-xs text-red-400 mt-2 text-center';
+                } finally {
+                    _voiceSetState('idle');
+                    // Keep the status message visible after resetting button look
+                    const status = document.getElementById('voiceStatus');
+                    status.classList.remove('hidden');
+                }
+            };
+
+            mediaRecorder.start(250); // collect in 250 ms chunks for reliability
+            isRecording = true;
+            _voiceSetState('recording');
+            _startTimer();
         }
 
         /* Photo Drag-and-Drop */
@@ -1355,26 +1614,31 @@
     <!-- WhatsApp Floating Action Button -->
     <div class="fixed bottom-24 right-6 z-40 flex flex-col items-end">
         <!-- Expanded Popover -->
-        <div id="qrPopover" class="mb-4 glass rounded-2xl shadow-2xl p-5 border border-slate-700 w-64 transition-all duration-300 opacity-0 pointer-events-none transform translate-y-4 origin-bottom-right">
+        <div id="qrPopover"
+            class="mb-4 glass rounded-2xl shadow-2xl p-5 border border-slate-700 w-64 transition-all duration-300 opacity-0 pointer-events-none transform translate-y-4 origin-bottom-right">
             <div class="flex justify-between items-start mb-3">
                 <div>
-                    <div class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest text-emerald-400 bg-emerald-900/30 border border-emerald-500/30 mb-1">
+                    <div
+                        class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest text-emerald-400 bg-emerald-900/30 border border-emerald-500/30 mb-1">
                         <span class="mr-1 w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Sandbox
                     </div>
                     <p class="text-sm font-bold text-white">Instant Alerts</p>
                 </div>
                 <button onclick="toggleQRPanel()" class="text-slate-400 hover:text-white">&times;</button>
             </div>
-            <a href="https://wa.me/14155238886?text=join%20railroad-classroom" target="_blank" class="block bg-white p-2 rounded-xl mb-3 hover:shadow-lg transition">
+            <a href="https://wa.me/14155238886?text=join%20railroad-classroom" target="_blank"
+                class="block bg-white p-2 rounded-xl mb-3 hover:shadow-lg transition">
                 <img src="/images/twilio_qr.png" alt="WhatsApp QR" class="w-full rounded-lg">
             </a>
             <p class="text-xs text-slate-400 text-center">Scan to connect directly to Nagar Alert Hub via WhatsApp.</p>
         </div>
 
         <!-- FAB Button -->
-        <button onclick="toggleQRPanel()" class="w-14 h-14 bg-gradient-to-tr from-emerald-500 to-green-400 rounded-full shadow-[0_10px_25px_rgba(16,185,129,0.4)] hover:shadow-[0_10px_35px_rgba(16,185,129,0.6)] hover:-translate-y-1 flex items-center justify-center text-white transition-all duration-300 border border-emerald-400 active:scale-95 z-50">
+        <button onclick="toggleQRPanel()"
+            class="w-14 h-14 bg-gradient-to-tr from-emerald-500 to-green-400 rounded-full shadow-[0_10px_25px_rgba(16,185,129,0.4)] hover:shadow-[0_10px_35px_rgba(16,185,129,0.6)] hover:-translate-y-1 flex items-center justify-center text-white transition-all duration-300 border border-emerald-400 active:scale-95 z-50">
             <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.888-.788-1.487-1.761-1.663-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+                <path
+                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.888-.788-1.487-1.761-1.663-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
             </svg>
         </button>
     </div>

@@ -5,8 +5,14 @@
 
 ## Key Features & Architecture
 
-### 1. Alert Reporting & Media Uploads
-- **Submission:** Citizens can submit alerts with a description, location, and optionally a phone number.
+### 1. Alert Reporting, Voice Input & Media Uploads
+- **Submission:** Citizens can submit alerts with a description, location, and optionally a phone number — by typing or by speaking.
+- **🎙️ Voice-to-Text (Groq Whisper):** A prominent "Tap to Speak Your Emergency" button lets citizens record their emergency verbally. The recording is transcribed server-side via the **Groq Whisper large-v3** model (`/api/transcribe`) and auto-fills the description field. Visual feedback includes:
+  - Animated 7-bar **waveform** during recording
+  - Live **recording timer** (0:00 counting up)
+  - Mic icon → waveform → spinner state transitions
+  - Green flash + smooth scroll to the description field on successful transcription
+  - Inline error messages (no disruptive alerts) on failure
 - **Photo Attachments:** Citizens can attach photos of incidents (e.g., broken pipes, hazards). Photos are securely stored locally in an `/uploads` directory and presented as thumbnails in the Admin Panel for visceral, credible evidence.
 - **Geocoding:** If a location is provided manually without map coordinates, the system dynamically geocodes it using OpenStreetMap Nominatim before submission.
 
@@ -19,8 +25,9 @@
 - **UI Translation:** Features a premium, arcade-style language toggle across all citizen and admin pages, allowing seamless switching between **English (EN)** and **Hindi (हिं)**.
 - **Native Hindi Processing:** The AI backend natively understands and categorizes Hindi descriptions, requiring no extra translation layer for the classifier.
 
-### 4. Automated Classification (Groq AI / ML)
-- **Department Prediction:** Powered by the **Groq API**, the system uses an AI classifier to intelligently route alerts to the correct department (Police, Fire, Medical, Electrical, Municipal, Traffic) based on natural language understanding. 
+### 4. Automated Classification & Voice Transcription (Groq AI / ML)
+- **Department Prediction:** Powered by the **Groq API**, the system uses an AI classifier to intelligently route alerts to the correct department (Police, Fire, Medical, Electrical, Municipal, Traffic) based on natural language understanding.
+- **Voice Transcription:** The **Groq Whisper large-v3** model transcribes recorded audio (WebM/OGG) into text server-side via a dedicated `/api/transcribe` REST endpoint, feeding directly into the same AI classification pipeline — voice and text reports are treated identically downstream.
 - **Keyword Fallback (Resilience):** If the API times out or is unreachable, the system automatically and silently falls back to a custom, heavily weighted keyword & bigram heuristic classifier, ensuring zero downtime during emergencies.
 - **Severity Detection:** Automatically assigns a severity level (Critical, High, Medium, Low) based on critical keyword and domain phrase matching.
 
@@ -43,4 +50,4 @@
 - **Backend:** Java 17, Spring Boot, Spring Security, OAuth2 Client
 - **Database:** MongoDB mapped via Spring Data MongoDB
 - **Frontend:** Thymeleaf templates, TailwindCSS, Leaflet.js (maps), Chart.js (analytics)
-- **Integrations:** Twilio API (WhatsApp Notifications), Groq API (AI Classification), OpenStreetMap Nominatim (Geocoding)
+- **Integrations:** Twilio API (WhatsApp Notifications), Groq API (AI Classification + Whisper Voice Transcription), OpenStreetMap Nominatim (Geocoding)
