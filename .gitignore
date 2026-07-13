@@ -32,3 +32,10 @@ build/
 ### VS Code ###
 .vscode/
 data/
+
+### Local secrets — never commit these ###
+.env
+.env.local
+application-local.properties
+*.secret
+alerts.ser
