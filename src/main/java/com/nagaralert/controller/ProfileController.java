@@ -23,8 +23,15 @@ public class ProfileController {
     }
 
     @GetMapping("/profile")
-    public String showProfile(@AuthenticationPrincipal OAuth2User oauth2User, OAuth2AuthenticationToken auth, Model model) {
-        if (oauth2User == null) {
+    public String showProfile(org.springframework.security.core.Authentication authentication, Model model) {
+        org.springframework.security.oauth2.core.user.OAuth2User oauth2User = null;
+        org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken auth = null;
+        if (authentication instanceof org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken) {
+            auth = (org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken) authentication;
+            oauth2User = auth.getPrincipal();
+        }
+
+        if (oauth2User == null || auth == null) {
             return "redirect:/login"; // Only accessible to logged-in OAuth citizens
         }
 
@@ -48,9 +55,17 @@ public class ProfileController {
     }
 
     @PostMapping("/profile")
-    public String updateProfile(@AuthenticationPrincipal OAuth2User oauth2User, OAuth2AuthenticationToken auth,
+    public String updateProfile(org.springframework.security.core.Authentication authentication,
                                 @RequestParam String dob, @RequestParam String mobileNumber) {
-        if (oauth2User == null) {
+        
+        org.springframework.security.oauth2.core.user.OAuth2User oauth2User = null;
+        org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken auth = null;
+        if (authentication instanceof org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken) {
+            auth = (org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken) authentication;
+            oauth2User = auth.getPrincipal();
+        }
+
+        if (oauth2User == null || auth == null) {
             return "redirect:/login";
         }
 

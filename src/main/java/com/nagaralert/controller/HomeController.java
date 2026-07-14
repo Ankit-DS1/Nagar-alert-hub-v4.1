@@ -61,11 +61,17 @@ public class HomeController {
 
     @PostMapping("/report")
     public String reportAlert(@ModelAttribute Alert alert, @RequestParam(value = "image", required = false) MultipartFile image,
-                              @org.springframework.security.core.annotation.AuthenticationPrincipal org.springframework.security.oauth2.core.user.OAuth2User oauth2User,
-                              org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken auth) {
+                              org.springframework.security.core.Authentication authentication) {
         alert.setAlertId(UUID.randomUUID().toString());
         alert.setTimestamp(LocalDateTime.now());
         alert.setSeverity(SeverityDetector.determineSeverity(alert.getDescription()));
+
+        org.springframework.security.oauth2.core.user.OAuth2User oauth2User = null;
+        org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken auth = null;
+        if (authentication instanceof org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken) {
+            auth = (org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken) authentication;
+            oauth2User = auth.getPrincipal();
+        }
 
         if (oauth2User != null && auth != null) {
             String provider = auth.getAuthorizedClientRegistrationId().toUpperCase();
@@ -110,10 +116,16 @@ public class HomeController {
 
     @GetMapping("/my-alerts")
     public String myAlerts(@RequestParam(required = false) String phone, Model model,
-                           @org.springframework.security.core.annotation.AuthenticationPrincipal org.springframework.security.oauth2.core.user.OAuth2User oauth2User,
-                           org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken auth) {
+                           org.springframework.security.core.Authentication authentication) {
         
         String targetPhone = phone;
+
+        org.springframework.security.oauth2.core.user.OAuth2User oauth2User = null;
+        org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken auth = null;
+        if (authentication instanceof org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken) {
+            auth = (org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken) authentication;
+            oauth2User = auth.getPrincipal();
+        }
 
         if (oauth2User != null && auth != null && (targetPhone == null || targetPhone.isBlank())) {
             String provider = auth.getAuthorizedClientRegistrationId().toUpperCase();
